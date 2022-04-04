@@ -8,10 +8,17 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 moveDirection;
     private CharacterController controller;
     
+    bool menu_open;
+    bool lego_selected;
+
     // Start is called before the first frame update
     void Start()
     {
-        controller=GetComponent<CharacterController>();  
+        controller=GetComponent<CharacterController>();
+        menu_open = false;
+        lego_selected = false;
+        //last_lego
+        //current_lego  
     }
 
     // Update is called once per frame
@@ -20,28 +27,77 @@ public class PlayerMovement : MonoBehaviour
         
         float xDir = Input.GetAxisRaw("Horizontal");
         float yDir = Input.GetAxisRaw("Vertical");
-        if(Input.GetButton("Jump")) //back button is currently joystick button 3
+        if(menu_open)
         {
-           
-            moveDirection=new Vector3(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"),0);
-            moveDirection = Camera.main.transform.TransformDirection(moveDirection);
-            moveDirection *= speed;
-            moveDirection.z = 0.0f;
-            controller.Move(moveDirection * Time.deltaTime);
+            if(Input.GetButtonUp("A"))
+            {
+                menu_open = false;
+                //close memus
+            }
         }
         else
         {
-            moveDirection=new Vector3(Input.GetAxis("Horizontal"),0,Input.GetAxis("Vertical"));
-            moveDirection = Camera.main.transform.TransformDirection(moveDirection);
-            moveDirection *= speed;
-            moveDirection.y = 0.0f;
-            controller.Move(moveDirection * Time.deltaTime);
+            if(lego_selected)
+            {
+                if(Input.GetButtonUp("B"))
+                {
+                    //place lego
+                    //set last_lego to the placed lego
+                }
+                if(Input.GetButtonUp("A"))
+                {
+                    lego_selected = false;
+                    //clear spawn lego
+                }
+                if(Input.GetButtonUp("X"))
+                {
+                    //color change selected lego
+                }
+                if(Input.GetButtonUp("Y"))
+                {
+                    //rotate lego
+                }
+            }
+            else
+            {
+                if(Input.GetButtonUp("B"))
+                {
+                    lego_selected = true;
+                    //spawn lego
+                    //set current lego value
+                }
+                if(Input.GetButtonUp("Y"))
+                {
+                    menu_open = true;
+                    //open menus
+                }
+            }
+           
+            // controls player movement
+            if(Input.GetButton("Y"))
+            {
+                
+                moveDirection=new Vector3(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"),0);
+                moveDirection = Camera.main.transform.TransformDirection(moveDirection);
+                moveDirection *= speed;
+                moveDirection.z = 0.0f;
+                controller.Move(moveDirection * Time.deltaTime);
+            }
+            else
+            {
+                moveDirection=new Vector3(Input.GetAxis("Horizontal"),0,Input.GetAxis("Vertical"));
+                moveDirection = Camera.main.transform.TransformDirection(moveDirection);
+                moveDirection *= speed;
+                moveDirection.y = 0.0f;
+                controller.Move(moveDirection * Time.deltaTime);
+            }
         }
 
         
         
 
     }
+    /*
     void OnTriggerEnter(Collider e)
     {
         if(e.transform.position.x > transform.position.x)
@@ -62,4 +118,5 @@ public class PlayerMovement : MonoBehaviour
         }
         
     }
+    */
 }

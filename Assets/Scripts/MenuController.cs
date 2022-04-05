@@ -14,16 +14,19 @@ public class MenuController : MonoBehaviour
     public Button undoButton;
     public Button zoomInButton;
     public Button zoomOutButton;
+    public Camera vision;
 
     UnityEngine.Color black = new Color32(39, 39, 39, 100);
     UnityEngine.Color purple = new Color32(180, 104, 236, 100);
 
-    public bool menuMode;
-    float timer = 0;
-    public static char selectedBlock = 'a';
+    public static bool menuMode;
+    float timer;
+    public static char selectedBlock;
 
     void Start()
     {
+        timer = 0;
+        selectedBlock = 'a';
         HideMainMenu();
         HideLegoMenu();
 
@@ -85,13 +88,21 @@ public class MenuController : MonoBehaviour
         {
             //TODO: INSERT UNDO LEGO PLACEMENT CODE HERE
         }
-        else if(zoomInButton.GetComponent<Image>().color != purple)
+        else if(zoomInButton.GetComponent<Image>().color != black)
         {
-            //TODO: INSERT ZOOM IN CODE HERE
+            //to close is 20
+            if(vision.fieldOfView > 20)
+            {
+                vision.fieldOfView -=10;
+            }
         }
         else
         {
-            //TODO: INSERT ZOOM OUT CODE HERE
+            //To far is 100
+            if(vision.fieldOfView < 100)
+            {
+                vision.fieldOfView +=10;
+            }
 
         }
     }

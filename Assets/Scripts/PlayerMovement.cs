@@ -7,15 +7,12 @@ public class PlayerMovement : MonoBehaviour
     float speed = 5;
     private Vector3 moveDirection;
     private CharacterController controller;
-    
-    bool menu_open;
     public static bool lego_selected;
 
     // Start is called before the first frame update
     void Start()
     {
         controller=GetComponent<CharacterController>();
-        menu_open = false;
         lego_selected = false;
         //last_lego
         //current_lego  
@@ -27,15 +24,7 @@ public class PlayerMovement : MonoBehaviour
         
         float xDir = Input.GetAxisRaw("Horizontal");
         float yDir = Input.GetAxisRaw("Vertical");
-        if(menu_open)
-        {
-            if(Input.GetButtonUp("A"))
-            {
-                menu_open = false;
-                //close memus
-            }
-        }
-        else
+        if(!MenuController.menuMode)
         {
             if(lego_selected)
             {
@@ -66,13 +55,7 @@ public class PlayerMovement : MonoBehaviour
                     //spawn lego
                     //set current lego value
                 }
-                if(Input.GetButtonUp("Y"))
-                {
-                    menu_open = true;
-                    //open menus
-                }
             }
-           
             // controls player movement
             if(Input.GetButton("OK"))
             {

@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController controller;
     
     bool menu_open;
-    bool lego_selected;
+    public static bool lego_selected;
 
     // Start is called before the first frame update
     void Start()
@@ -74,7 +74,7 @@ public class PlayerMovement : MonoBehaviour
             }
            
             // controls player movement
-            if(Input.GetButton("Y"))
+            if(Input.GetButton("OK"))
             {
                 
                 moveDirection=new Vector3(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"),0);

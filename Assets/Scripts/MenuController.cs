@@ -21,12 +21,12 @@ public class MenuController : MonoBehaviour
 
     public static bool menuMode;
     float timer;
-    public static char selectedBlock;
+    public static int selectedBlock;
 
     void Start()
     {
         timer = 0;
-        selectedBlock = 'a';
+        selectedBlock = 0;
         HideMainMenu();
         HideLegoMenu();
 

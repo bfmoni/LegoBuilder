@@ -9,16 +9,17 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController controller;
     public static bool lego_selected;
 
-    // Start is called before the first frame update
+    // holds all the lego prefabs 0-5 is 1x 6-10 is 2x prefab 11 is L shape
+    public GameObject[] lego_blocks;
+    public GameObject current_lego;
+    public static GameObject last_lego;
+
     void Start()
     {
         controller=GetComponent<CharacterController>();
         lego_selected = false;
-        //last_lego
-        //current_lego  
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -35,8 +36,8 @@ public class PlayerMovement : MonoBehaviour
                 }
                 if(Input.GetButtonUp("A"))
                 {
+                    Destroy(current_lego);
                     lego_selected = false;
-                    //clear spawn lego
                 }
                 if(Input.GetButtonUp("X"))
                 {
@@ -44,15 +45,18 @@ public class PlayerMovement : MonoBehaviour
                 }
                 if(Input.GetButtonUp("Y"))
                 {
-                    //rotate lego
+                    //ONLY DEALING WITH 90 DEGREE ROTATION
+                    //NOT COMPLETE NEEDS TO DEAL WITH NEW PLACEMENT BASED ON ROTATION
+                    current_lego.transform.Rotate(0,90,0);
                 }
             }
             else
             {
+                // NOT FULL IMPLEMENTED
                 if(Input.GetButtonUp("B"))
                 {
                     lego_selected = true;
-                    //spawn lego
+                    current_lego = Instantiate(lego_blocks[MenuController.selectedBlock], this.transform.position + Vector3.forward*4, this.transform.rotation);
                     //set current lego value
                 }
             }
@@ -76,10 +80,9 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        
-        
 
     }
+
     /*
     void OnTriggerEnter(Collider e)
     {

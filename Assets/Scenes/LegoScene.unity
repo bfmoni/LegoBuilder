@@ -1442,7 +1442,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1339266685}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalPosition: {x: 0, y: 4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1115222366}
@@ -1474,6 +1474,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5855a8dd771f5ad43ac1fd5aa526c97b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lego_blocks:
+  - {fileID: 5536806735132781134, guid: 611715d0011f4434ebdfee7bc986af7c, type: 3}
+  - {fileID: 4049722573103341364, guid: 587432a17b7a750498e04995077fb2bc, type: 3}
+  - {fileID: 6690427150116146932, guid: d0cf3034196b8cc4f84371b412182758, type: 3}
+  - {fileID: 4636513466008563080, guid: 9b3943b75af27364ca3e348bfaee2c6a, type: 3}
+  - {fileID: 4176732880131503423, guid: 33aa2a029602a0044940fb925b6abba5, type: 3}
+  - {fileID: 8795418697200865258, guid: 405406a42bcfd15448fe3a446ca0ccf1, type: 3}
+  - {fileID: 1490867525074054014, guid: f6250b70285675a488e73f9287fee71e, type: 3}
+  - {fileID: 2970032074368218660, guid: 9c5d5c9bdef7c2948826d3deb782d8af, type: 3}
+  - {fileID: 2863783984243035354, guid: 0fca838fc685c0943842a6f6c76333e8, type: 3}
+  - {fileID: 3538728818640732234, guid: 43789c6a58ab3cf47bd66cd6881d77ca, type: 3}
+  - {fileID: 4218448499809432047, guid: 5f1af6f5b75d15847839bc2e4d85ed21, type: 3}
+  - {fileID: 2483332701523267614, guid: 51d98cd8115b6fa4fa1045751593a002, type: 3}
+  current_lego: {fileID: 0}
 --- !u!114 &1339266690
 MonoBehaviour:
   m_ObjectHideFlags: 0

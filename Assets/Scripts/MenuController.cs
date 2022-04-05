@@ -35,6 +35,7 @@ public class MenuController : MonoBehaviour
     public static bool menuMode;
     float timer;
     public static int selectedBlock;
+    public float scale = 1f;
 
     void Start()
     {
@@ -371,19 +372,33 @@ public class MenuController : MonoBehaviour
         }
         else if(zoomInButton.GetComponent<Image>().color != black)
         {
-            //to close is 20
+            /*
             if(vision.fieldOfView > 20)
             {
                 vision.fieldOfView -=10;
             }
+            */
+
+            scale -= 1f;
+            scale = Mathf.Clamp(scale, 1f, 10f);
+            transform.localScale = new Vector3(scale, scale, scale);
+
+            //PlayerMovement.speed = PlayerMovement.speed * scale;
+
         }
         else
         {
-            //To far is 100
+            /*
             if(vision.fieldOfView < 100)
             {
                 vision.fieldOfView +=10;
             }
+            */
+            scale += 1f;
+            scale = Mathf.Clamp(scale, 1f, 10f);
+            transform.localScale = new Vector3(scale, scale, scale);
+
+            //PlayerMovement.speed = PlayerMovement.speed * scale;
 
         }
     }

@@ -75,7 +75,6 @@ public class MenuController : MonoBehaviour
                 }
                 else if(legoPanel.activeInHierarchy)
                 {
-                    //TODO: SET ACTIVE LEGO FUNCTION
                     SelectLego();
                 }
                 else

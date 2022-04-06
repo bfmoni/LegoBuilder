@@ -14,6 +14,17 @@ public class PlayerMovement : MonoBehaviour
     public GameObject current_lego;
     public static GameObject last_lego;
 
+    //Lego Colors
+    UnityEngine.Color lego_purple = new Color32(150, 117, 180, 255);
+    UnityEngine.Color lego_blue = new Color32(0, 163, 218, 225);
+    UnityEngine.Color lego_green = new Color32(150, 199, 83, 225);
+    UnityEngine.Color lego_yellow = new Color32(247, 209, 18, 255);
+    UnityEngine.Color lego_red = new Color32(229, 30, 38, 255);
+    UnityEngine.Color lego_brown = new Color32(166, 83, 34, 255);
+    UnityEngine.Color lego_black = new Color32(21, 21, 21, 255);
+    UnityEngine.Color lego_white = new Color32(244, 244, 244, 255);
+
+
     void Start()
     {
         controller=GetComponent<CharacterController>();
@@ -41,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 if(Input.GetButtonUp("X"))
                 {
-                    //color change selected lego
+                    ColorCycle();
                 }
                 if(Input.GetButtonUp("Y"))
                 {
@@ -105,4 +116,20 @@ public class PlayerMovement : MonoBehaviour
         
     }
     */
+    public void ColorCycle()
+    {
+        int numChildren = current_lego.transform.childCount;
+        for(int i=0; i<numChildren; i++)
+        {
+            GameObject child = current_lego.transform.GetChild(i).gameObject;
+            if(child.GetComponent<Renderer>().material.color == lego_purple) {child.GetComponent<Renderer>().material.color = lego_blue;}
+            else if(child.GetComponent<Renderer>().material.color == lego_blue) {child.GetComponent<Renderer>().material.color = lego_green;}
+            else if(child.GetComponent<Renderer>().material.color == lego_green) {child.GetComponent<Renderer>().material.color = lego_yellow;}
+            else if(child.GetComponent<Renderer>().material.color == lego_yellow) {child.GetComponent<Renderer>().material.color = lego_red;}
+            else if(child.GetComponent<Renderer>().material.color == lego_red) {child.GetComponent<Renderer>().material.color = lego_brown;}
+            else if(child.GetComponent<Renderer>().material.color == lego_brown) {child.GetComponent<Renderer>().material.color = lego_black;}
+            else if(child.GetComponent<Renderer>().material.color == lego_black) {child.GetComponent<Renderer>().material.color = lego_white;}
+            else if(child.GetComponent<Renderer>().material.color == lego_white) {child.GetComponent<Renderer>().material.color = lego_purple;}
+        }
+    }
 }

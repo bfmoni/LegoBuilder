@@ -9,6 +9,7 @@ public class MenuController : MonoBehaviour
     public GameObject UIpanel;
     public GameObject menuPanel;
     public GameObject legoPanel;
+    public GameObject startPanel;
     public Button menuButton;
     public Button legoButton;
     public Button undoButton;
@@ -30,8 +31,13 @@ public class MenuController : MonoBehaviour
     public Button multiplayer;
     public Button avatar;
     public Button help;
+    public Button quit;
     public Button sandbox;
     public Camera vision;
+    public GameObject legoSprite1;
+    public GameObject legoSprite2;
+    public GameObject legoSprite3;
+    public GameObject legoSprite4;
 
     UnityEngine.Color black = new Color32(39, 39, 39, 100);
     UnityEngine.Color blackDark = new Color32(54, 54, 54, 225);
@@ -44,6 +50,7 @@ public class MenuController : MonoBehaviour
     float timer;
     public static int selectedBlock;
     public float scale = 1f;
+    public static bool starting = true;
 
     void Start()
     {
@@ -51,7 +58,11 @@ public class MenuController : MonoBehaviour
         selectedBlock = 0;
         HideMainMenu();
         HideLegoMenu();
-
+        legoSprite1.GetComponent<Renderer>().enabled = false;
+        legoSprite2.GetComponent<Renderer>().enabled = false;
+        legoSprite3.GetComponent<Renderer>().enabled = false;
+        legoSprite4.GetComponent<Renderer>().enabled = false;
+        StartCoroutine(SpawnIcons());
     }
 
 
@@ -59,7 +70,16 @@ public class MenuController : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        if(!PlayerMovement.lego_selected)
+        if(starting)
+        {
+            if(Input.GetButtonUp("B"))
+            {
+                starting = false;
+                startPanel.SetActive(false);
+            }
+        }
+        
+        else if(!PlayerMovement.lego_selected)
         {
             if(Input.GetButtonUp("Y"))
             {
@@ -480,6 +500,16 @@ public class MenuController : MonoBehaviour
             avatar.GetComponent<Image>().color = blackDark;
             kit.GetComponent<Image>().color = blackLight;
         }
+        else if(help.GetComponent<Image>().color != blackDark)
+        {
+            help.GetComponent<Image>().color = blackDark;
+            quit.GetComponent<Image>().color = blackLight;
+        }
+        else if(quit.GetComponent<Image>().color != blackDark)
+        {
+            quit.GetComponent<Image>().color = blackDark;
+            help.GetComponent<Image>().color = blackLight;
+        }
     }
 
     public void SwapMainMenuL()
@@ -498,6 +528,16 @@ public class MenuController : MonoBehaviour
         {
             avatar.GetComponent<Image>().color = blackDark;
             multiplayer.GetComponent<Image>().color = blackLight;
+        }
+        else if(help.GetComponent<Image>().color != blackDark)
+        {
+            help.GetComponent<Image>().color = blackDark;
+            quit.GetComponent<Image>().color = blackLight;
+        }
+        else if(quit.GetComponent<Image>().color != blackDark)
+        {
+            quit.GetComponent<Image>().color = blackDark;
+            help.GetComponent<Image>().color = blackLight;
         }
     }
 
@@ -521,6 +561,11 @@ public class MenuController : MonoBehaviour
         else if(help.GetComponent<Image>().color != blackDark)
         {
             help.GetComponent<Image>().color = blackDark;
+            sandbox.GetComponent<Image>().color = blackLight;
+        }
+        else if(quit.GetComponent<Image>().color != blackDark)
+        {
+            quit.GetComponent<Image>().color = blackDark;
             sandbox.GetComponent<Image>().color = blackLight;
         }
         else if(sandbox.GetComponent<Image>().color != purple2)
@@ -552,6 +597,11 @@ public class MenuController : MonoBehaviour
             help.GetComponent<Image>().color = blackDark;
             kit.GetComponent<Image>().color = blackLight;
         }
+        else if(quit.GetComponent<Image>().color != blackDark)
+        {
+            quit.GetComponent<Image>().color = blackDark;
+            kit.GetComponent<Image>().color = blackLight;
+        }
         else if(sandbox.GetComponent<Image>().color != purple2)
         {
             sandbox.GetComponent<Image>().color = purple2;
@@ -576,6 +626,10 @@ public class MenuController : MonoBehaviour
         else if(help.GetComponent<Image>().color != blackDark)
         {
             //TODO
+        }
+        else if(quit.GetComponent<Image>().color != blackDark)
+        {
+            Application.Quit();
         }
         else if(sandbox.GetComponent<Image>().color != purple2)
         {
@@ -669,6 +723,30 @@ public class MenuController : MonoBehaviour
             case(11):
                 lblock.GetComponent<Image>().color = purple;
                 break;
+        }
+    }
+
+    private IEnumerator SpawnIcons()
+    {
+        while(starting)
+        {
+            yield return new WaitForSeconds(0.75f);
+            legoSprite1.GetComponent<Renderer>().enabled = true;
+            yield return new WaitForSeconds(0.75f);
+            legoSprite2.GetComponent<Renderer>().enabled = true;
+            yield return new WaitForSeconds(0.75f);
+            legoSprite3.GetComponent<Renderer>().enabled = true;
+            yield return new WaitForSeconds(0.75f);
+            legoSprite4.GetComponent<Renderer>().enabled = true;
+
+            yield return new WaitForSeconds(0.75f);
+            legoSprite1.GetComponent<Renderer>().enabled = false;
+            yield return new WaitForSeconds(0.75f);
+            legoSprite2.GetComponent<Renderer>().enabled = false;
+            yield return new WaitForSeconds(0.75f);
+            legoSprite3.GetComponent<Renderer>().enabled = false;
+            yield return new WaitForSeconds(0.75f);
+            legoSprite4.GetComponent<Renderer>().enabled = false;
         }
     }
 }

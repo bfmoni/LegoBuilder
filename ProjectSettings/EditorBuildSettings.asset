@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/OpenPage.unity
+    guid: 21046cc70b10dbe448c6bde096df3c4a
+  - enabled: 1
     path: Assets/Scenes/LegoScene.unity
     guid: 54cdbadff0c7c4e4c8f4e5a9787cc9a2
   m_configObjects:

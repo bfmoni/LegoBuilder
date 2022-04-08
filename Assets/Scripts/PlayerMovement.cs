@@ -36,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
         
         float xDir = Input.GetAxisRaw("Horizontal");
         float yDir = Input.GetAxisRaw("Vertical");
-        if(!MenuController.menuMode & !MenuController.starting)
+        if(!MenuController.menuMode)
         {
             if(lego_selected)
             {

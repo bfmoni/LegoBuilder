@@ -9,6 +9,7 @@ public class MenuController : MonoBehaviour
     public GameObject UIpanel;
     public GameObject menuPanel;
     public GameObject legoPanel;
+    public GameObject helpPanel;
     public Button menuButton;
     public Button legoButton;
     public Button undoButton;
@@ -33,6 +34,7 @@ public class MenuController : MonoBehaviour
     public Button quit;
     public Button sandbox;
     public Camera vision;
+    public GameObject reticle;
     
 
     UnityEngine.Color black = new Color32(39, 39, 39, 100);
@@ -53,7 +55,7 @@ public class MenuController : MonoBehaviour
         selectedBlock = 0;
         HideMainMenu();
         HideLegoMenu();
-        
+        helpPanel.SetActive(false);
     }
 
 
@@ -69,7 +71,7 @@ public class MenuController : MonoBehaviour
                 {
                     EnterMenuMode();
                 }
-                else if(!menuPanel.activeInHierarchy & !legoPanel.activeInHierarchy)
+                else if(!menuPanel.activeInHierarchy & !legoPanel.activeInHierarchy & !helpPanel.activeInHierarchy)
                 {
                     SwapMenu();
                 }
@@ -88,6 +90,10 @@ public class MenuController : MonoBehaviour
                 {
                     SelectLego();
                 }
+                else if (helpPanel.activeInHierarchy)
+                {
+                    HideHelpMenu();
+                }
                 else
                 {
                     SelectMenu();
@@ -98,7 +104,7 @@ public class MenuController : MonoBehaviour
             var temp1 = Input.GetAxis("Horizontal");
             var temp2 = Input.GetAxis("Vertical");
 
-            if((temp1 != 0 | temp2 != 0) & timer > 0.5 & legoPanel.activeInHierarchy)
+            if((temp1 != 0 | temp2 != 0) & timer > 0.3 & legoPanel.activeInHierarchy)
             {
                 timer = 0;
                 if(Mathf.Abs(temp1) > Mathf.Abs(temp2))
@@ -118,7 +124,7 @@ public class MenuController : MonoBehaviour
                 }
             }
 
-            else if((temp1 != 0 | temp2 != 0) & timer > 0.5 & menuPanel.activeInHierarchy)
+            else if((temp1 != 0 | temp2 != 0) & timer > 0.3 & menuPanel.activeInHierarchy)
             {
                 timer = 0;
                 if(Mathf.Abs(temp1) > Mathf.Abs(temp2))
@@ -594,7 +600,7 @@ public class MenuController : MonoBehaviour
         }
         else if(help.GetComponent<Image>().color != blackDark)
         {
-            //TODO
+            ShowHelpMenu();
         }
         else if(quit.GetComponent<Image>().color != blackDark)
         {
@@ -616,6 +622,7 @@ public class MenuController : MonoBehaviour
     {
         HideMainMenu();
         HideLegoMenu();
+        helpPanel.SetActive(false);
         menuButton.GetComponent<Image>().color = black;
         legoButton.GetComponent<Image>().color = black;
         undoButton.GetComponent<Image>().color = black;
@@ -636,14 +643,18 @@ public class MenuController : MonoBehaviour
         UIpanel.SetActive(true);
         menuButton.GetComponent<Image>().color = black;
         menuMode = false;
+
+        reticle.SetActive(true);
     }
 
     public void ShowMainMenu()
     {
+        reticle.SetActive(false);
         UIpanel.SetActive(false);
         menuPanel.SetActive(true);
         kit.GetComponent<Image>().color = blackLight;
     }
+
     public void HideLegoMenu()
     {
         legoPanel.SetActive(false);
@@ -693,6 +704,19 @@ public class MenuController : MonoBehaviour
                 lblock.GetComponent<Image>().color = purple;
                 break;
         }
+    }
+
+    public void ShowHelpMenu()
+    {
+        menuPanel.SetActive(false);
+        helpPanel.SetActive(true);
+    }
+    
+    public void HideHelpMenu()
+    {
+        help.GetComponent<Image>().color = blackDark;
+        helpPanel.SetActive(false);
+        ShowMainMenu();
     }
 
 }

@@ -26,7 +26,6 @@ public class MenuController : MonoBehaviour
     public Button twox4;
     public Button twox6;
     public Button twox8;
-    public Button lblock;
     public Button kit;
     public Button multiplayer;
     public Button avatar;
@@ -50,7 +49,6 @@ public class MenuController : MonoBehaviour
     float timer;
     public static int selectedBlock;
     public static float scale = 1f;
-    //TODO Delte L Block from LegoController array and menu functions
     //TODO fix first time sandbox click
     void Start()
     {
@@ -204,10 +202,6 @@ public class MenuController : MonoBehaviour
         {
             selectedBlock = 10;
         }
-        else if(lblock.GetComponent<Image>().color != clear)
-        {
-            selectedBlock = 11;
-        }
         ExitMenuMode();
     }
 
@@ -266,11 +260,6 @@ public class MenuController : MonoBehaviour
         else if(twox8.GetComponent<Image>().color != clear)
         {
             twox8.GetComponent<Image>().color = clear;
-            lblock.GetComponent<Image>().color = purple;
-        }
-        else if(lblock.GetComponent<Image>().color != clear)
-        {
-            lblock.GetComponent<Image>().color = clear;
             twox2.GetComponent<Image>().color = purple;
         }
     }
@@ -310,7 +299,7 @@ public class MenuController : MonoBehaviour
         else if(twox2.GetComponent<Image>().color != clear)
         {
             twox2.GetComponent<Image>().color = clear;
-            lblock.GetComponent<Image>().color = purple;
+            twox8.GetComponent<Image>().color = purple;
         }
         else if(twox3.GetComponent<Image>().color != clear)
         {
@@ -331,11 +320,6 @@ public class MenuController : MonoBehaviour
         {
             twox8.GetComponent<Image>().color = clear;
             twox6.GetComponent<Image>().color = purple;
-        }
-        else if(lblock.GetComponent<Image>().color != clear)
-        {
-            lblock.GetComponent<Image>().color = clear;
-            twox8.GetComponent<Image>().color = purple;
         }
     }
 
@@ -369,7 +353,7 @@ public class MenuController : MonoBehaviour
         else if(onex8.GetComponent<Image>().color != clear)
         {
             onex8.GetComponent<Image>().color = clear;
-            lblock.GetComponent<Image>().color = purple;
+            twox8.GetComponent<Image>().color = purple;
         }
         else if(twox2.GetComponent<Image>().color != clear)
         {
@@ -395,11 +379,6 @@ public class MenuController : MonoBehaviour
         {
             twox8.GetComponent<Image>().color = clear;
             onex6.GetComponent<Image>().color = purple;
-        }
-        else if(lblock.GetComponent<Image>().color != clear)
-        {
-            lblock.GetComponent<Image>().color = clear;
-            onex8.GetComponent<Image>().color = purple;
         }
     }
 
@@ -710,9 +689,6 @@ public class MenuController : MonoBehaviour
                 break;
             case(10):
                 twox8.GetComponent<Image>().color = purple;
-                break;
-            case(11):
-                lblock.GetComponent<Image>().color = purple;
                 break;
         }
     }

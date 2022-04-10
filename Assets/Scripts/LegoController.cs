@@ -10,7 +10,6 @@ public class LegoController : MonoBehaviour
     public Lego current_lego;
     public bool PositionOk;
 
-    public Vector3 gp;
 
     //Lego Colors
     UnityEngine.Color lego_purple = new Color32(150, 117, 180, 255);
@@ -37,7 +36,7 @@ public class LegoController : MonoBehaviour
         {
             if(current_lego == null)
             {
-                if(Input.GetButtonUp("B"))
+                if(Input.GetButtonUp("B") && !MenuController.last_open)
                 {
                     current_lego = Instantiate(all_legos[MenuController.selectedBlock]);
                     current_lego.Collider.enabled = false;
@@ -53,6 +52,7 @@ public class LegoController : MonoBehaviour
                 if(Input.GetButtonUp("A"))
                 {
                     GameObject.DestroyImmediate(current_lego.gameObject);
+                    PlayerMovement.lego_selected = false;
                 }
                 if(Input.GetButtonUp("X"))
                 {
@@ -72,39 +72,28 @@ public class LegoController : MonoBehaviour
                 if (Physics.Raycast(Camera.main.transform.position + Vector3.up * .02f , Camera.main.transform.forward, out var hitInfo, 100, GridController.LegoLayer))
                 {
                     Vector3 p = GridController.SnapToGrid(hitInfo.point);
-
-                    if(PositionOk)
-                    {
-                        if( Mathf.Abs(( (p.x*p.x - gp.x*gp.x) + ( p.y*p.y - gp.y*gp.y) + ( p.z*p.z - gp.z * gp.z) )) > 1.1)
-                        {
-                            PositionOk = false;
-                        }
-                    }
-                    else
-                    {
                     
-                        var placePosition = p;
-                        PositionOk = false;
-                        for (int i = 0; i < 10; i++)
-                        {
-                            var collider = Physics.OverlapBox(placePosition + current_lego.transform.rotation * current_lego.Collider.center, current_lego.Collider.size / 2, current_lego.transform.rotation, GridController.LegoLayer);
-                            PositionOk = collider.Length == 0;
-                            if (PositionOk)
-                            {
-                                break;
-                            }
-                            else
-                                placePosition.y += GridController.Grid.y;
-                        }
-                        
+                    var placePosition = p;
+                    PositionOk = false;
+                    for (int i = 0; i < 10; i++)
+                    {
+                        var collider = Physics.OverlapBox(placePosition + current_lego.transform.rotation * current_lego.Collider.center, current_lego.Collider.size / 2, current_lego.transform.rotation, GridController.LegoLayer);
+                        PositionOk = collider.Length == 0;
                         if (PositionOk)
                         {
-                            current_lego.transform.position = placePosition;
-                            gp = placePosition;
+                            break;
                         }
                         else
-                            current_lego.transform.position = p;
+                            placePosition.y += GridController.Grid.y;
                     }
+                    
+                    if (PositionOk)
+                    {
+                        current_lego.transform.position = placePosition;
+                    }
+                    else
+                        current_lego.transform.position = p;
+                    
                 
                 }
             

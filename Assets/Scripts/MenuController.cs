@@ -35,6 +35,8 @@ public class MenuController : MonoBehaviour
     public Button sandbox;
     public Camera vision;
     public GameObject reticle;
+
+    public static bool last_open = false;
     
 
     UnityEngine.Color black = new Color32(39, 39, 39, 100);
@@ -48,7 +50,8 @@ public class MenuController : MonoBehaviour
     float timer;
     public static int selectedBlock;
     public static float scale = 1f;
-
+    //TODO Delte L Block from LegoController array and menu functions
+    //TODO fix first time sandbox click
     void Start()
     {
         timer = 0;
@@ -61,6 +64,7 @@ public class MenuController : MonoBehaviour
 
     void Update()
     {
+        last_open = false;
         timer += Time.deltaTime;
         
         if(!PlayerMovement.lego_selected)
@@ -614,7 +618,7 @@ public class MenuController : MonoBehaviour
         }
         else if(sandbox.GetComponent<Image>().color != purple2)
         {
-            HideMainMenu();
+            ExitMenuMode();
         }
     }
 
@@ -634,6 +638,7 @@ public class MenuController : MonoBehaviour
         undoButton.GetComponent<Image>().color = black;
         zoomInButton.GetComponent<Image>().color = black;
         zoomOutButton.GetComponent<Image>().color = black;
+        last_open = true;
         menuMode = false;
     }
 

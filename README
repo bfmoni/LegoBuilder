@@ -17,7 +17,7 @@ B: place lego
 X: color cycle lego
 Y: rotate lego
 
-note: when using Unity editor the corresponding button mappings (computer -> controller) are
+note: when using Unity editor the corresponding button mappings (controller -> computer) are
 
 joystick -> WASD keys
 trigger -> alt

@@ -1,6 +1,6 @@
 Sources:
 
-lego placement (snap to grid) inspired by:
+lego placement (snap to grid) inspired by and followed guide of:
 https://www.youtube.com/watch?v=0jzc_uNdH40&t=647s
 
 sphynx model inspired by:

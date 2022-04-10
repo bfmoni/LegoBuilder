@@ -47,7 +47,7 @@ public class MenuController : MonoBehaviour
     public static bool menuMode;
     float timer;
     public static int selectedBlock;
-    public float scale = 1f;
+    public static float scale = 1f;
 
     void Start()
     {
@@ -411,7 +411,12 @@ public class MenuController : MonoBehaviour
         }
         else if(undoButton.GetComponent<Image>().color != black)
         {
-            //TODO: INSERT UNDO LEGO PLACEMENT CODE HERE
+            //FIX THIS CODE
+            if(PlayerMovement.placed_legos.Peek() != null)
+            {
+                DestroyImmediate(PlayerMovement.placed_legos.Pop());
+
+            }
         }
         else if(zoomInButton.GetComponent<Image>().color != black)
         {

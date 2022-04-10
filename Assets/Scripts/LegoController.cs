@@ -40,6 +40,7 @@ public class LegoController : MonoBehaviour
                 if(Input.GetButtonUp("B"))
                 {
                     current_lego = Instantiate(all_legos[MenuController.selectedBlock]);
+                    current_lego.Collider.enabled = false;
                     PlayerMovement.lego_selected = true;
                 }
             }
@@ -51,7 +52,7 @@ public class LegoController : MonoBehaviour
                 }
                 if(Input.GetButtonUp("A"))
                 {
-                    DestroyImmediate(current_lego);
+                    GameObject.DestroyImmediate(current_lego.gameObject);
                 }
                 if(Input.GetButtonUp("X"))
                 {
@@ -119,6 +120,7 @@ public class LegoController : MonoBehaviour
         if(current_lego != null && PositionOk)
         {
             PlayerMovement.placed_legos.Push(current_lego);
+            current_lego.Collider.enabled = true;
             current_lego = null;
             PlayerMovement.lego_selected = false;
         }

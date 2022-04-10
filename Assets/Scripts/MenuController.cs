@@ -411,10 +411,11 @@ public class MenuController : MonoBehaviour
         }
         else if(undoButton.GetComponent<Image>().color != black)
         {
-            //FIX THIS CODE
-            if(PlayerMovement.placed_legos.Peek() != null)
+            
+            if(PlayerMovement.placed_legos.Count != 0)
             {
-                DestroyImmediate(PlayerMovement.placed_legos.Pop());
+                
+                GameObject.DestroyImmediate(PlayerMovement.placed_legos.Pop().gameObject);
 
             }
         }

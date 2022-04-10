@@ -39,8 +39,8 @@ public class MenuController : MonoBehaviour
     
 
     UnityEngine.Color black = new Color32(39, 39, 39, 100);
-    UnityEngine.Color blackDark = new Color32(54, 54, 54, 225);
-    UnityEngine.Color blackLight = new Color32(100, 100, 100, 225);
+    UnityEngine.Color blackDark = new Color32(54, 54, 54, 255);
+    UnityEngine.Color blackLight = new Color32(100, 100, 100, 255);
     UnityEngine.Color clear = new Color32(39, 39, 39, 0);
     UnityEngine.Color purple = new Color32(180, 104, 236, 100);
     UnityEngine.Color purple2 = new Color32(187, 134, 252, 114);
@@ -49,7 +49,7 @@ public class MenuController : MonoBehaviour
     float timer;
     public static int selectedBlock;
     public static float scale = 1f;
-    //TODO fix first time sandbox click
+
     void Start()
     {
         timer = 0;
@@ -591,13 +591,13 @@ public class MenuController : MonoBehaviour
         {
             ShowHelpMenu();
         }
-        else if(quit.GetComponent<Image>().color != blackDark)
-        {
-            Application.Quit();
-        }
         else if(sandbox.GetComponent<Image>().color != purple2)
         {
             ExitMenuMode();
+        }
+        else if(quit.GetComponent<Image>().color != blackDark)
+        {
+            Application.Quit();
         }
     }
 

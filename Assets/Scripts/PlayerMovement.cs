@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public static float speed = 5;
+    public static float speed = 8;
     private Vector3 moveDirection;
     private CharacterController controller;
     public static bool lego_selected;

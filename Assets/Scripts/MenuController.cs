@@ -10,6 +10,7 @@ public class MenuController : MonoBehaviour
     public GameObject menuPanel;
     public GameObject legoPanel;
     public GameObject helpPanel;
+    public GameObject avatarPanel;
     public Button menuButton;
     public Button legoButton;
     public Button undoButton;
@@ -57,6 +58,7 @@ public class MenuController : MonoBehaviour
         HideMainMenu();
         HideLegoMenu();
         helpPanel.SetActive(false);
+        avatarPanel.SetActive(false);
     }
 
 

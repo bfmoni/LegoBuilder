@@ -19,7 +19,7 @@ public class MenuController : MonoBehaviour
     //Avatar buttons
     public Button hatButton, backButton, handButton, faceButton, bodyButton, legButton, saveButton, avatarBackButton;
     //Avatar pieces
-    public GameObject hat,face,back,hand,chest,leg,skin;
+    public GameObject hat, face, back, hand, chest, leg, skin, demoAvatar;
 
     public GameObject a_hat,a_face,a_back,a_hand,a_chest,a_leg,a_skin;
 
@@ -71,9 +71,13 @@ public class MenuController : MonoBehaviour
                 {
                     EnterMenuMode();
                 }
-                else if(!menuPanel.activeInHierarchy & !legoPanel.activeInHierarchy & !helpPanel.activeInHierarchy)
+                else if(!menuPanel.activeInHierarchy & !legoPanel.activeInHierarchy & !helpPanel.activeInHierarchy & !avatarPanel.activeInHierarchy)
                 {
                     SwapMenu();
+                }
+                else if(avatarPanel.activeInHierarchy)
+                {
+                    demoAvatar.transform.Rotate(0, 0, 45);
                 }
             }
             else if(Input.GetButtonUp("A") & menuMode)
@@ -770,8 +774,21 @@ public class MenuController : MonoBehaviour
         Menu_Minifig_Setup(4);
         Menu_Minifig_Setup(5);
         avatarPanel.SetActive(true);
+        hatButton.GetComponent<Image>().color = blackLight;
         menuPanel.SetActive(false);
     }
+    public void HideAvatarMenu()
+    {
+
+        avatarBackButton.GetComponent<Image>().color = blackDark;
+        handButton.GetComponent<Image>().color = blackDark;
+        faceButton.GetComponent<Image>().color = blackDark;
+        backButton.GetComponent<Image>().color = blackDark;
+        bodyButton.GetComponent<Image>().color = blackDark;
+        legButton.GetComponent<Image>().color = blackDark;
+        saveButton.GetComponent<Image>().color = purple2;
+    }
+
     public void SwapAvatarHorizontal()
     {
         if(hatButton.GetComponent<Image>().color != blackDark)
@@ -945,26 +962,25 @@ public class MenuController : MonoBehaviour
         }
         else if(saveButton.GetComponent<Image>().color != purple2)
         {
-            saveButton.GetComponent<Image>().color = purple2;
             Array.Copy(color_array,a_color_array,color_array.Length);
             Array.Copy(piece_array,a_piece_array,piece_array.Length);
             SwapAvatarModel();
+            HideAvatarMenu();
             ExitMenuMode();
         }
         else if(avatarBackButton.GetComponent<Image>().color != blackDark)
         {
+            HideAvatarMenu();
             avatarPanel.SetActive(false);
             menuPanel.SetActive(true);
         }
     }
-    //TODO Make the value 6 a variable or change it when you add more colors
-    //TODO Add the more colors into the Avatar_colors variable
     public void SelectAvatarColor()
     {
         //spot 0
         if(hatButton.GetComponent<Image>().color != blackDark)
         {
-            if(color_array[0] < 6)
+            if(color_array[0] < avatar_colors.Length - 1)
                 color_array[0]++;
             else
                 color_array[0] = 0;
@@ -973,7 +989,7 @@ public class MenuController : MonoBehaviour
         //spot 1
         else if(faceButton.GetComponent<Image>().color != blackDark)
         {
-             if(color_array[1] < 6)
+             if(color_array[1] < avatar_colors.Length - 1)
                 color_array[1]++;
             else
                 color_array[1] = 0;
@@ -982,7 +998,7 @@ public class MenuController : MonoBehaviour
         //spot 2
         else if(backButton.GetComponent<Image>().color != blackDark)
         {
-             if(color_array[2] < 6)
+             if(color_array[2] < avatar_colors.Length - 1)
                 color_array[2]++;
             else
                 color_array[2] = 0;
@@ -991,7 +1007,7 @@ public class MenuController : MonoBehaviour
         //spot 3
         else if(handButton.GetComponent<Image>().color != blackDark)
         {
-             if(color_array[3] < 6)
+             if(color_array[3] < avatar_colors.Length - 1)
                 color_array[3]++;
             else
                 color_array[3] = 0;
@@ -1000,7 +1016,7 @@ public class MenuController : MonoBehaviour
         //spot 4
         else if(bodyButton.GetComponent<Image>().color != blackDark)
         {
-             if(color_array[4] < 6)
+             if(color_array[4] < avatar_colors.Length - 1)
                 color_array[4]++;
             else
                 color_array[4] = 0;
@@ -1009,7 +1025,7 @@ public class MenuController : MonoBehaviour
         //spot 5
         else if(legButton.GetComponent<Image>().color != blackDark)
         {
-             if(color_array[5] < 6)
+             if(color_array[5] < avatar_colors.Length - 1)
                 color_array[5]++;
             else
                 color_array[5] = 0;
@@ -1124,5 +1140,4 @@ public class MenuController : MonoBehaviour
         a_leg.GetComponent<Renderer>().material = avatar_colors[color_array[5]];
                 
     }
-
 }

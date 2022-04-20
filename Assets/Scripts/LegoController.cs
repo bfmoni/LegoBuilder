@@ -69,7 +69,7 @@ public class LegoController : MonoBehaviour
         {
             
             
-                if (Physics.Raycast(Camera.main.transform.position + Vector3.up * .02f , Camera.main.transform.forward, out var hitInfo, 100, GridController.LegoLayer))
+                if (Physics.Raycast(Camera.main.transform.position - Vector3.up * 0.2f , Camera.main.transform.forward, out var hitInfo, 100, GridController.LegoLayer))
                 {
                     Vector3 p = GridController.SnapToGrid(hitInfo.point);
                     

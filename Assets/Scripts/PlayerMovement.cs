@@ -11,12 +11,16 @@ public class PlayerMovement : MonoBehaviour
     public static bool lego_selected;
     public static Stack<Lego> placed_legos;
 
+   
+
+    
 
     void Start()
     {
         placed_legos = new Stack<Lego>();
         controller=GetComponent<CharacterController>();
         lego_selected = false;
+       
     }
 
     void Update()
@@ -35,6 +39,7 @@ public class PlayerMovement : MonoBehaviour
                 moveDirection *= speed;
                 moveDirection.z = 0.0f;
                 controller.Move(moveDirection * Time.deltaTime);
+                
             }
             else
             {
@@ -48,5 +53,5 @@ public class PlayerMovement : MonoBehaviour
 
 
     }
-
+   
 }

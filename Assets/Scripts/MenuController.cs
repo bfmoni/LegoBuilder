@@ -22,6 +22,7 @@ public class MenuController : MonoBehaviour
     public GameObject hat, face, back, hand, chest, leg, skin, demoAvatar;
 
     public GameObject a_hat,a_face,a_back,a_hand,a_chest,a_leg,a_skin;
+    public GameObject cameraParent, minifig;
 
     public int [] color_array = new int [6];
     public int [] piece_array = new int [4];
@@ -44,7 +45,7 @@ public class MenuController : MonoBehaviour
     public static bool menuMode;
     public static int selectedBlock;
     float timer;
-    public static int scale = 4;
+    public static int scale = 0;
     public static bool last_open = false;
 
     void Start()
@@ -435,43 +436,20 @@ public class MenuController : MonoBehaviour
         }
         else if(zoomInButton.GetComponent<Image>().color != black)
         {
-            //TODO fix zoomin
-
-            // 4 = max zoomin, 1 = max zoomout
-            if(scale < 4)
+            // 0 = max zoomin, 2 = max zoomout
+            if(scale > 0)
             {
-                scale += 1;
-                //Camera.main.transform.position = minifig.transform.position + new Vector3(0, -4 * scale, 2 * scale);
-                /*
-                if(scale == 4)
-                {
-                    Camera.main.transform.Rotate(0, 0, 0);
-                }
-
-
-                moveDirection=new Vector3(Input.GetAxis("Horizontal"),0,Input.GetAxis("Vertical"));
-                moveDirection = Camera.main.transform.TransformDirection(moveDirection);
-                moveDirection *= speed;
-                moveDirection.y = 0.0f;
-                controller.Move(moveDirection * Time.deltaTime);
-                */
+                scale -= 1;
+                cameraParent.transform.position = minifig.transform.position + new Vector3(0, 2.92f + (3 * scale), 1.03f + (-4 * scale));
 
             }
         }
         else if(zoomOutButton.GetComponent<Image>().color != black)
         {
-            //TODO fix zoomout
-            if(scale > 1)
+            if(scale < 2)
             {
-                scale -= 1;
-                //Camera.main.transform.position = minifig.transform.position + new Vector3(0, 4 * scale, -2 * scale);
-                /*
-                if(scale == 3)
-                {
-                    Camera.main.transform.Rotate(0, -30, 0);
-                    //minifig.transform.Rotate(0, 0, 0);
-                }
-                */
+                scale += 1;
+                cameraParent.transform.position = minifig.transform.position + new Vector3(0, 2.92f + (3 * scale), 1.03f + (-4 * scale));
             }
         
         }

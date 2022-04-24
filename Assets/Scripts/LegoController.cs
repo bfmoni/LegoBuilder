@@ -90,14 +90,16 @@ public class LegoController : MonoBehaviour
                 if(current_kit == null)
                 {
                     current_kit = Instantiate(kits[kit_selection]);
+
                     for(int i = 0; i < current_kit.kit_legos.Length; i++)
                     {
                         current_kit.kit_legos[i].Collider.enabled = false;
                     }
+                    
                 }
                 if(current_kit != null)
                 {
-                    kit_position = PlaceKit2();
+                    PlaceKit2();
                 }
                 
                 if(Input.GetButtonUp("B") && !MenuController.last_open)
@@ -184,31 +186,34 @@ public class LegoController : MonoBehaviour
     {
         if(current_kit != null && kit_position)
         {
+            /*
             for(int i = 0; i < current_kit.kit_legos.Length; i++)
             {
                 current_kit.kit_legos[i].Collider.enabled = true;
             }
+            */
             current_kit = null;
             kit_placed = true;
         }
     }
 
-    public bool PlaceKit2()
+    public void PlaceKit2()
     {
+        kit_position = false;
         if (Physics.Raycast(Camera.main.transform.position - Vector3.up * 0.1f , Camera.main.transform.forward, out var hitInfo, 100, GridController.LegoLayer))
         {
             Vector3 p = GridController.SnapToGrid(hitInfo.point);
             var placePosition = p;
-            //bottom layer check
             int numCollisions = 0;
             int level = 0;
             while(level < 10)
             {
+                numCollisions = 0;
                 for(int i = 0; i < bottom_level; i++)
                 {
-                    numCollisions = 0;
                     Lego child = current_kit.kit_legos[i];
                     placePosition = p;
+                    placePosition.y += (GridController.Grid.y * level);
                     //placePosition.y += level;
                     var collider = Physics.OverlapBox(placePosition + child.transform.rotation * child.Collider.center, child.Collider.size / 2, child.transform.rotation, GridController.LegoLayer);
                     if (!(collider.Length == 0))
@@ -217,29 +222,29 @@ public class LegoController : MonoBehaviour
                     }
 
                 }
-
+                Debug.Log(numCollisions);
                 if(numCollisions == bottom_level)
                 {
                     //all of the legos in the bottom level collided with something, go up a level
                     level++;
-                    placePosition.y += GridController.Grid.y;
                 }
                 else if(numCollisions == 0)
                 {
                     //none of the legos in the bottom level collided with anything, position is ok to place
+                    kit_position = true;
                     current_kit.transform.position = placePosition;
-                    return true;
+                    break;
                 }
                 else
                 {
                     //some legos collided, some didn't. no valid position in current location
                     current_kit.transform.position = p;
-                    return false;
+                    break;
                 }
             }
 
         }
-        return false;
+
             
     }
 

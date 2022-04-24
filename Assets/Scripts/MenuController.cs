@@ -26,11 +26,11 @@ public class MenuController : MonoBehaviour
     public GameObject a_hat,a_face,a_back,a_hand,a_chest,a_leg,a_skin;
     public GameObject cameraParent, minifig;
 
-    public int [] color_array = new int [6];
-    public int [] piece_array = new int [4];
+    public int [] avatar_color_array = new int [6];
+    public int [] avatar_piece_array = new int [4];
 
-    public int [] a_color_array = new int [6];
-    public int [] a_piece_array = new int [4];
+    public int [] temp_color_array = new int [6];
+    public int [] temp_piece_array = new int [4];
     public  Material[] face_array;
     public Material[] avatar_colors;
     public  GameObject[] item_array;
@@ -59,6 +59,8 @@ public class MenuController : MonoBehaviour
         HideHelpMenu();
         HideAvatarMenu();
         HideKitMenu();
+        LoadAvatar();
+        //ResetData();
     }
 
 
@@ -776,8 +778,8 @@ public class MenuController : MonoBehaviour
 
     public void ShowAvatarMenu()
     {
-        Array.Copy(a_color_array,color_array,color_array.Length);
-        Array.Copy(a_piece_array,piece_array,piece_array.Length);
+        Array.Copy(avatar_color_array, temp_color_array, avatar_color_array.Length);
+        Array.Copy(avatar_piece_array, temp_piece_array, avatar_piece_array.Length);
         Menu_Minifig_Setup(0);
         Menu_Minifig_Setup(1);
         Menu_Minifig_Setup(2);
@@ -939,44 +941,45 @@ public class MenuController : MonoBehaviour
         //spot 0
         if(hatButton.GetComponent<Image>().color != blackDark)
         {
-            if(piece_array[0] < 3)
-                piece_array[0]++;
+            if(temp_piece_array[0] < 3)
+                temp_piece_array[0]++;
             else
-                piece_array[0] = 0;
+                temp_piece_array[0] = 0;
             Menu_Minifig_Setup(0);
         }
         //spot 1
         else if(faceButton.GetComponent<Image>().color != blackDark)
         {
-            if(piece_array[1] < 2)
-                piece_array[1]++;
+            if(temp_piece_array[1] < 2)
+                temp_piece_array[1]++;
             else
-                piece_array[1] = 0;
+                temp_piece_array[1] = 0;
             Menu_Minifig_Setup(1);
         }
         //spot 2
         else if(backButton.GetComponent<Image>().color != blackDark)
         {
-            if(piece_array[2] < 3)
-                piece_array[2]++;
+            if(temp_piece_array[2] < 3)
+                temp_piece_array[2]++;
             else
-                piece_array[2] = 0;
+                temp_piece_array[2] = 0;
             Menu_Minifig_Setup(2);
         }
         //spot 3
         else if(handButton.GetComponent<Image>().color != blackDark)
         {
-            if(piece_array[3] < 3)
-                piece_array[3]++;
+            if(temp_piece_array[3] < 3)
+                temp_piece_array[3]++;
             else
-                piece_array[3] = 0;
+                temp_piece_array[3] = 0;
             Menu_Minifig_Setup(3);
         }
         else if(saveButton.GetComponent<Image>().color != purple2)
         {
-            Array.Copy(color_array,a_color_array,color_array.Length);
-            Array.Copy(piece_array,a_piece_array,piece_array.Length);
+            Array.Copy(temp_color_array, avatar_color_array, avatar_color_array.Length);
+            Array.Copy(temp_piece_array, avatar_piece_array, avatar_piece_array.Length);
             SwapAvatarModel();
+            SaveAvatar();
             HideAvatarMenu();
             ExitMenuMode();
         }
@@ -991,55 +994,55 @@ public class MenuController : MonoBehaviour
         //spot 0
         if(hatButton.GetComponent<Image>().color != blackDark)
         {
-            if(color_array[0] < avatar_colors.Length - 1)
-                color_array[0]++;
+            if(temp_color_array[0] < avatar_colors.Length - 1)
+                temp_color_array[0]++;
             else
-                color_array[0] = 0;
+                temp_color_array[0] = 0;
             Menu_Minifig_Setup(0);
         }
         //spot 1
         else if(faceButton.GetComponent<Image>().color != blackDark)
         {
-             if(color_array[1] < avatar_colors.Length - 1)
-                color_array[1]++;
+             if(temp_color_array[1] < avatar_colors.Length - 1)
+                temp_color_array[1]++;
             else
-                color_array[1] = 0;
+                temp_color_array[1] = 0;
             Menu_Minifig_Setup(1);
         }
         //spot 2
         else if(backButton.GetComponent<Image>().color != blackDark)
         {
-             if(color_array[2] < avatar_colors.Length - 1)
-                color_array[2]++;
+             if(temp_color_array[2] < avatar_colors.Length - 1)
+                temp_color_array[2]++;
             else
-                color_array[2] = 0;
+                temp_color_array[2] = 0;
             Menu_Minifig_Setup(2);
         }
         //spot 3
         else if(handButton.GetComponent<Image>().color != blackDark)
         {
-             if(color_array[3] < avatar_colors.Length - 1)
-                color_array[3]++;
+             if(temp_color_array[3] < avatar_colors.Length - 1)
+                temp_color_array[3]++;
             else
-                color_array[3] = 0;
+                temp_color_array[3] = 0;
             Menu_Minifig_Setup(3);
         }
         //spot 4
         else if(bodyButton.GetComponent<Image>().color != blackDark)
         {
-             if(color_array[4] < avatar_colors.Length - 1)
-                color_array[4]++;
+             if(temp_color_array[4] < avatar_colors.Length - 1)
+                temp_color_array[4]++;
             else
-                color_array[4] = 0;
+                temp_color_array[4] = 0;
             Menu_Minifig_Setup(4);
         }
         //spot 5
         else if(legButton.GetComponent<Image>().color != blackDark)
         {
-             if(color_array[5] < avatar_colors.Length - 1)
-                color_array[5]++;
+             if(temp_color_array[5] < avatar_colors.Length - 1)
+                temp_color_array[5]++;
             else
-                color_array[5] = 0;
+                temp_color_array[5] = 0;
             Menu_Minifig_Setup(5);
         }
         
@@ -1053,16 +1056,16 @@ public class MenuController : MonoBehaviour
                 {
                     DestroyImmediate(hat.transform.GetChild(0).gameObject);
                 }
-                if(piece_array[0] < 3)
+                if(temp_piece_array[0] < 3)
                 {
-                    GameObject tempHat = Instantiate (hat_array[piece_array[0]]) as GameObject;
+                    GameObject tempHat = Instantiate (hat_array[temp_piece_array[0]]) as GameObject;
                     tempHat.transform.SetParent(hat.transform, false);
-                    tempHat.GetComponent<Renderer>().material = avatar_colors[color_array[0]];
+                    tempHat.GetComponent<Renderer>().material = avatar_colors[temp_color_array[0]];
                 }
                 break;
             case 1:
-                face.GetComponent<Renderer>().material = face_array[piece_array[1]];
-                skin.GetComponent<Renderer>().material = avatar_colors[color_array[1]];
+                face.GetComponent<Renderer>().material = face_array[temp_piece_array[1]];
+                skin.GetComponent<Renderer>().material = avatar_colors[temp_color_array[1]];
                 break;
             case 2:
                 if(back.transform.childCount > 0)
@@ -1070,14 +1073,14 @@ public class MenuController : MonoBehaviour
                     DestroyImmediate(back.transform.GetChild(0).gameObject);
                 }
 
-                if(piece_array[2] < 3)
+                if(temp_piece_array[2] < 3)
                 {
-                    GameObject tempBack = Instantiate (back_array[piece_array[2]]) as GameObject;
+                    GameObject tempBack = Instantiate (back_array[temp_piece_array[2]]) as GameObject;
                     tempBack.transform.SetParent(back.transform, false);
-                    if(piece_array[2] == 1)
-                        tempBack.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = avatar_colors[color_array[2]];
+                    if(temp_piece_array[2] == 1)
+                        tempBack.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = avatar_colors[temp_color_array[2]];
                     else
-                        tempBack.GetComponent<Renderer>().material = avatar_colors[color_array[2]];
+                        tempBack.GetComponent<Renderer>().material = avatar_colors[temp_color_array[2]];
                 }
                 break;
             case 3:
@@ -1085,18 +1088,18 @@ public class MenuController : MonoBehaviour
                 {
                     DestroyImmediate(hand.transform.GetChild(0).gameObject);
                 }
-                if(piece_array[3] < 3)
+                if(temp_piece_array[3] < 3)
                 {
-                    GameObject tempHand = Instantiate (item_array[piece_array[3]]) as GameObject;
+                    GameObject tempHand = Instantiate (item_array[temp_piece_array[3]]) as GameObject;
                     tempHand.transform.SetParent(hand.transform, false);
-                    tempHand.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = avatar_colors[color_array[3]];
+                    tempHand.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = avatar_colors[temp_color_array[3]];
                 }
                 break;
             case 4:
-                chest.GetComponent<Renderer>().material = avatar_colors[color_array[4]];
+                chest.GetComponent<Renderer>().material = avatar_colors[temp_color_array[4]];
                 break;
             case 5:
-                leg.GetComponent<Renderer>().material = avatar_colors[color_array[5]];
+                leg.GetComponent<Renderer>().material = avatar_colors[temp_color_array[5]];
                 break;
         }
     }
@@ -1107,16 +1110,16 @@ public class MenuController : MonoBehaviour
         {
             DestroyImmediate(a_hat.transform.GetChild(0).gameObject);
         }
-        if(piece_array[0] < 3)
+        if(avatar_piece_array[0] < 3)
         {
-            GameObject tempHat = Instantiate (hat_array[piece_array[0]]) as GameObject;
+            GameObject tempHat = Instantiate (hat_array[avatar_piece_array[0]]) as GameObject;
             tempHat.transform.SetParent(a_hat.transform, false);
-            tempHat.GetComponent<Renderer>().material = avatar_colors[color_array[0]];
+            tempHat.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[0]];
         }
         
     
-        a_face.GetComponent<Renderer>().material = face_array[piece_array[1]];
-        a_skin.GetComponent<Renderer>().material = avatar_colors[color_array[1]];
+        a_face.GetComponent<Renderer>().material = face_array[avatar_piece_array[1]];
+        a_skin.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[1]];
         
     
         if(a_back.transform.childCount > 0)
@@ -1124,31 +1127,31 @@ public class MenuController : MonoBehaviour
             DestroyImmediate(a_back.transform.GetChild(0).gameObject);
         }
 
-        if(piece_array[2] < 3)
+        if(avatar_piece_array[2] < 3)
         {
-            GameObject tempBack = Instantiate (back_array[piece_array[2]]) as GameObject;
+            GameObject tempBack = Instantiate (back_array[avatar_piece_array[2]]) as GameObject;
             tempBack.transform.SetParent(a_back.transform, false);
-            if(piece_array[2] == 1)
-                tempBack.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = avatar_colors[color_array[2]];
+            if(avatar_piece_array[2] == 1)
+                tempBack.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[2]];
             else
-                tempBack.GetComponent<Renderer>().material = avatar_colors[color_array[2]];
+                tempBack.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[2]];
         }
         
         if(a_hand.transform.childCount > 0)
         {
             DestroyImmediate(a_hand.transform.GetChild(0).gameObject);
         }
-        if(piece_array[3] < 3)
+        if(avatar_piece_array[3] < 3)
         {
-            GameObject tempHand = Instantiate (item_array[piece_array[3]]) as GameObject;
+            GameObject tempHand = Instantiate (item_array[avatar_piece_array[3]]) as GameObject;
             tempHand.transform.SetParent(a_hand.transform, false);
-            tempHand.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = avatar_colors[color_array[3]];
+            tempHand.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[3]];
         }
         
-        a_chest.GetComponent<Renderer>().material = avatar_colors[color_array[4]];
+        a_chest.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[4]];
         
     
-        a_leg.GetComponent<Renderer>().material = avatar_colors[color_array[5]];
+        a_leg.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[5]];
                 
     }
 
@@ -1227,6 +1230,42 @@ public class MenuController : MonoBehaviour
         pyramidButton.GetComponent<Image>().color = blackDark;
         kitBackButton.GetComponent<Image>().color = blackDark;
         kitPanel.SetActive(false);
+    }
+
+    public void SaveAvatar()
+    {
+        //color_array
+        //piece_array
+        for(int i = 0; i < avatar_color_array.Length; i++)
+        {
+            PlayerPrefs.SetInt("color" + i, avatar_color_array[i]);
+        }
+        for(int i = 0; i < avatar_piece_array.Length; i++)
+        {
+            PlayerPrefs.SetInt("piece" + i, avatar_piece_array[i]);
+        }
+        PlayerPrefs.Save();
+    }
+
+    public void LoadAvatar()
+    {
+        if(PlayerPrefs.HasKey("color0"))
+        {
+            for(int i = 0; i < avatar_color_array.Length; i++)
+            {
+                avatar_color_array[i] = PlayerPrefs.GetInt("color" + i);
+            }
+            for(int i = 0; i < avatar_piece_array.Length; i++)
+            {
+                avatar_piece_array[i] = PlayerPrefs.GetInt("piece" + i);
+            }
+        }
+        SwapAvatarModel();
+    }
+
+    void ResetData()
+    {
+        PlayerPrefs.DeleteAll();
     }
 
 }

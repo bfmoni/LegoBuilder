@@ -11,6 +11,19 @@ public class LegoController : MonoBehaviour
     public bool PositionOk;
 
 
+
+
+    public Kit[] kits;
+    public bool kit_placed = false;
+    public bool kit_position = false;
+    public static bool kit_mode = false;
+    public static int kit_selection;
+    public static int bottom_level;
+    public Kit current_kit;
+
+   
+
+
     //Lego Colors
     UnityEngine.Color lego_purple = new Color32(150, 117, 180, 255);
     UnityEngine.Color lego_blue = new Color32(0, 163, 218, 225);
@@ -32,7 +45,7 @@ public class LegoController : MonoBehaviour
     void Update()
     {
     
-        if(!MenuController.menuMode)
+        if(!MenuController.menuMode && !kit_mode)
         {
             if(current_lego == null)
             {
@@ -47,7 +60,7 @@ public class LegoController : MonoBehaviour
             {
                 if(Input.GetButtonUp("B"))
                 {
-                    PlaceLego();
+                    ConfirmLego();
                 }
                 if(Input.GetButtonUp("A"))
                 {
@@ -69,42 +82,45 @@ public class LegoController : MonoBehaviour
         {
             
             
-                if (Physics.Raycast(Camera.main.transform.position - Vector3.up * 0.1f , Camera.main.transform.forward, out var hitInfo, 100, GridController.LegoLayer))
+            PlaceLego();
+               
+        }
+        if(kit_mode)
+        {
+            if(!kit_placed)
+            {
+                if(current_kit == null)
                 {
-                    Vector3 p = GridController.SnapToGrid(hitInfo.point);
-                    
-                    var placePosition = p;
-                    PositionOk = false;
-                    for (int i = 0; i < 10; i++)
+                    current_kit = Instantiate(kits[kit_selection]);
+                    for(int i = 0; i < current_kit.kit_legos.Length; i++)
                     {
-                        var collider = Physics.OverlapBox(placePosition + current_lego.transform.rotation * current_lego.Collider.center, current_lego.Collider.size / 2, current_lego.transform.rotation, GridController.LegoLayer);
-                        PositionOk = collider.Length == 0;
-                        if (PositionOk)
-                        {
-                            break;
-                        }
-                        else
-                            placePosition.y += GridController.Grid.y;
+                        current_kit.kit_legos[i].Collider.enabled = false;
                     }
-                    
-                    if (PositionOk)
-                    {
-                        current_lego.transform.position = placePosition;
-                    }
-                    else
-                        current_lego.transform.position = p;
-                    
-                
                 }
-            
-            
-            
+                kit_position = PlaceKit();
+                if(Input.GetButtonUp("B") && !MenuController.last_open)
+                {
+                    if(kit_position)
+                        kit_placed = true;
+                }
+                else if(Input.GetButtonUp("A") && !MenuController.last_open)
+                {
+                    //TODO Fix this
+                    GameObject.DestroyImmediate(current_kit);
+                    kit_mode = false;
+                }
+                else if(Input.GetButtonUp("Y") && !MenuController.last_open)
+                {
+                    current_kit.transform.Rotate(0,90,0);
+                }
+
+            }
         }
 
     }
 
 
-    public void PlaceLego()
+    public void ConfirmLego()
     {
         if(current_lego != null && PositionOk)
         {
@@ -130,6 +146,107 @@ public class LegoController : MonoBehaviour
             else if(child.GetComponent<Renderer>().material.color == lego_black) {child.GetComponent<Renderer>().material.color = lego_white;}
             else if(child.GetComponent<Renderer>().material.color == lego_white) {child.GetComponent<Renderer>().material.color = lego_purple;}
         }
+    }
+    public void PlaceLego()
+    {
+        if (Physics.Raycast(Camera.main.transform.position - Vector3.up * 0.1f , Camera.main.transform.forward, out var hitInfo, 100, GridController.LegoLayer))
+        {
+            Vector3 p = GridController.SnapToGrid(hitInfo.point);
+            
+            var placePosition = p;
+            PositionOk = false;
+            for (int i = 0; i < 10; i++)
+            {
+                var collider = Physics.OverlapBox(placePosition + current_lego.transform.rotation * current_lego.Collider.center, current_lego.Collider.size / 2, current_lego.transform.rotation, GridController.LegoLayer);
+                //Why does this version not work?
+                //var collider = Physics.OverlapBox(placePosition + current_lego.Collider.center, current_lego.Collider.size / 2, current_lego.transform.rotation, GridController.LegoLayer);
+                PositionOk = collider.Length == 0;
+                if (PositionOk)
+                {
+                    break;
+                }
+                else
+                    placePosition.y += GridController.Grid.y;
+            }
+            
+            if (PositionOk)
+            {
+                current_lego.transform.position = placePosition;
+            }
+            else
+                current_lego.transform.position = p;
+            
+        
+        }
+    }
+    public bool PlaceKit()
+    {
+        int last_level = 0;
+        kit_position = false;
+        if (Physics.Raycast(Camera.main.transform.position - Vector3.up * 0.1f , Camera.main.transform.forward, out var hitInfo, 100, GridController.LegoLayer))
+        {
+            Vector3 p = GridController.SnapToGrid(hitInfo.point);
+            //bottom layer check
+            for(int i = 0; i< bottom_level; i++)
+            {
+                int level = 0;
+                Lego child = current_kit.kit_legos[i];
+                var placePosition = p;
+                for (int j = 0; j < 10; i++)
+                {
+                    PositionOk = false;
+                    var collider = Physics.OverlapBox( p + new Vector3(0,level,0) + child.transform.rotation *child.Collider.center, child.Collider.size / 2, child.transform.rotation, GridController.LegoLayer);
+                    PositionOk = collider.Length == 0;
+                    if (PositionOk)
+                    {
+                        if(i == 0)
+                        {
+                            last_level = level;
+                        }
+
+                        //TODO probably doesnt work
+                        if(level != last_level)
+                        {
+                            current_kit.transform.position = p;
+                            return false;
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        level++;
+                    }
+                }
+                
+            }
+             
+
+            //rest of the blocks
+            int numChildren = current_kit.kit_legos.Length;
+            for(int i = bottom_level; i < numChildren; i++)
+            {
+                PositionOk = false;
+                Lego child = current_kit.kit_legos[i];
+                var collider = Physics.OverlapBox(new Vector3(0,last_level,0) +child.Collider.center, child.Collider.size / 2, child.transform.rotation, GridController.LegoLayer);
+                PositionOk = collider.Length == 0;
+                if (PositionOk)
+                {
+                    //if positionOk we dont need to do anything
+                }
+                else
+                {
+                    current_kit.transform.position = p;
+                    return false;
+                }
+                
+            }
+            
+            current_kit.transform.position = p + new Vector3(0,last_level,0);
+            return true;
+           
+        }
+        return false;
+            
     }
 
 }

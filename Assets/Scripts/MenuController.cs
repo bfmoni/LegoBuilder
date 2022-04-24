@@ -8,7 +8,7 @@ public class MenuController : MonoBehaviour
 {
     public Canvas mainCanvas;
     //panels
-    public GameObject UIpanel, menuPanel, legoPanel, helpPanel, avatarPanel;
+    public GameObject UIpanel, menuPanel, legoPanel, helpPanel, avatarPanel, kitPanel;
 
     //top menu buttons
     public Button menuButton, legoButton, undoButton, zoomInButton, zoomOutButton;
@@ -20,6 +20,8 @@ public class MenuController : MonoBehaviour
     public Button hatButton, backButton, handButton, faceButton, bodyButton, legButton, saveButton, avatarBackButton;
     //Avatar pieces
     public GameObject hat, face, back, hand, chest, leg, skin, demoAvatar;
+    //kit buttons
+    public GameObject sphynxButton, pyramidButton, kitBackButton;
 
     public GameObject a_hat,a_face,a_back,a_hand,a_chest,a_leg,a_skin;
     public GameObject cameraParent, minifig;
@@ -35,7 +37,6 @@ public class MenuController : MonoBehaviour
     public  GameObject[] back_array;
     public  GameObject[] hat_array;
     
-    UnityEngine.Color black = new Color32(39, 39, 39, 100);
     UnityEngine.Color blackDark = new Color32(54, 54, 54, 255);
     UnityEngine.Color blackLight = new Color32(100, 100, 100, 255);
     UnityEngine.Color clear = new Color32(39, 39, 39, 0);
@@ -44,27 +45,34 @@ public class MenuController : MonoBehaviour
 
     public static bool menuMode;
     public static int selectedBlock;
-    float timer;
+    float timer, nextInputTimer;
     public static int scale = 0;
     public static bool last_open = false;
 
     void Start()
     {
         timer = 0;
+        nextInputTimer = 0;
         selectedBlock = 0;
         HideMainMenu();
         HideLegoMenu();
-        helpPanel.SetActive(false);
-        avatarPanel.SetActive(false);
+        HideHelpMenu();
+        HideAvatarMenu();
+        HideKitMenu();
     }
 
 
     void Update()
     {
-        last_open = false;
-        timer += Time.deltaTime;
         
-        if(!PlayerMovement.lego_selected)
+        timer += Time.deltaTime;
+        if(nextInputTimer < 5)
+            nextInputTimer += Time.deltaTime;
+        if(nextInputTimer > .1)
+            last_open = false;
+        
+        
+        if(!PlayerMovement.lego_selected && !LegoController.kit_mode)
         {
             if(Input.GetButtonUp("Y"))
             {
@@ -72,7 +80,7 @@ public class MenuController : MonoBehaviour
                 {
                     EnterMenuMode();
                 }
-                else if(!menuPanel.activeInHierarchy & !legoPanel.activeInHierarchy & !helpPanel.activeInHierarchy & !avatarPanel.activeInHierarchy)
+                else if(!menuPanel.activeInHierarchy & !legoPanel.activeInHierarchy & !helpPanel.activeInHierarchy & !avatarPanel.activeInHierarchy & !kitPanel.activeInHierarchy)
                 {
                     SwapMenu();
                 }
@@ -102,6 +110,10 @@ public class MenuController : MonoBehaviour
                 else if(avatarPanel.activeInHierarchy)
                 {
                     SelectAvatar();
+                }
+                else if(kitPanel.activeInHierarchy)
+                {
+                    SelectKit();
                 }
                 else
                 {
@@ -185,6 +197,19 @@ public class MenuController : MonoBehaviour
                 }
             }
 
+            else if((temp1 != 0 | temp2 != 0) & timer > 0.3 & kitPanel.activeInHierarchy)
+            {
+                timer = 0;
+                if(Mathf.Abs(temp1) > Mathf.Abs(temp2))
+                {
+                    SwapKitHorizontal();
+                }
+                else
+                {
+                    SwapKitVerticle();
+                }
+            }
+
         }
     }
 
@@ -234,7 +259,16 @@ public class MenuController : MonoBehaviour
         {
             selectedBlock = 10;
         }
-        ExitMenuMode();
+        HideMainMenu();
+        HideLegoMenu();
+        HideKitMenu();
+        HideHelpMenu();
+        HideAvatarMenu();
+        menuButton.GetComponent<Image>().color = blackDark;
+        legoButton.GetComponent<Image>().color = blackDark;
+        undoButton.GetComponent<Image>().color = blackDark;
+        zoomInButton.GetComponent<Image>().color = blackDark;
+        zoomOutButton.GetComponent<Image>().color = blackDark;
     }
 
     public void SwapLegoHorizontalR()
@@ -416,15 +450,15 @@ public class MenuController : MonoBehaviour
 
     public void SelectMenu()
     {
-        if(menuButton.GetComponent<Image>().color != black)
+        if(menuButton.GetComponent<Image>().color != blackDark)
         {
             ShowMainMenu();
         }
-        else if(legoButton.GetComponent<Image>().color != black)
+        else if(legoButton.GetComponent<Image>().color != blackDark)
         {
             ShowLegoMenu();
         }
-        else if(undoButton.GetComponent<Image>().color != black)
+        else if(undoButton.GetComponent<Image>().color != blackDark)
         {
             
             if(PlayerMovement.placed_legos.Count != 0)
@@ -434,7 +468,7 @@ public class MenuController : MonoBehaviour
 
             }
         }
-        else if(zoomInButton.GetComponent<Image>().color != black)
+        else if(zoomInButton.GetComponent<Image>().color != blackDark)
         {
             // 0 = max zoomin, 2 = max zoomout
             if(scale > 0)
@@ -444,7 +478,7 @@ public class MenuController : MonoBehaviour
 
             }
         }
-        else if(zoomOutButton.GetComponent<Image>().color != black)
+        else if(zoomOutButton.GetComponent<Image>().color != blackDark)
         {
             if(scale < 2)
             {
@@ -457,29 +491,29 @@ public class MenuController : MonoBehaviour
 
     public void SwapMenu()
     {
-        if(menuButton.GetComponent<Image>().color != black)
+        if(menuButton.GetComponent<Image>().color != blackDark)
         {
-            menuButton.GetComponent<Image>().color = black;
+            menuButton.GetComponent<Image>().color = blackDark;
             legoButton.GetComponent<Image>().color = purple;
         }
-        else if(legoButton.GetComponent<Image>().color != black)
+        else if(legoButton.GetComponent<Image>().color != blackDark)
         {
-            legoButton.GetComponent<Image>().color = black;
+            legoButton.GetComponent<Image>().color = blackDark;
             undoButton.GetComponent<Image>().color = purple;
         }
-        else if(undoButton.GetComponent<Image>().color != black)
+        else if(undoButton.GetComponent<Image>().color != blackDark)
         {
-            undoButton.GetComponent<Image>().color = black;
+            undoButton.GetComponent<Image>().color = blackDark;
             zoomInButton.GetComponent<Image>().color = purple;
         }
-        else if(zoomInButton.GetComponent<Image>().color != black)
+        else if(zoomInButton.GetComponent<Image>().color != blackDark)
         {
-            zoomInButton.GetComponent<Image>().color = black;
+            zoomInButton.GetComponent<Image>().color = blackDark;
             zoomOutButton.GetComponent<Image>().color = purple;
         }
-        else if(zoomOutButton.GetComponent<Image>().color != black)
+        else if(zoomOutButton.GetComponent<Image>().color != blackDark)
         {
-            zoomOutButton.GetComponent<Image>().color = black;
+            zoomOutButton.GetComponent<Image>().color = blackDark;
             menuButton.GetComponent<Image>().color = purple;
         }
     }
@@ -614,7 +648,7 @@ public class MenuController : MonoBehaviour
     {
         if(kit.GetComponent<Image>().color != blackDark)
         {
-            //TODO
+            ShowKitMenu();
         }
         else if(multiplayer.GetComponent<Image>().color != blackDark)
         {
@@ -648,13 +682,15 @@ public class MenuController : MonoBehaviour
     {
         HideMainMenu();
         HideLegoMenu();
-        helpPanel.SetActive(false);
-        avatarPanel.SetActive(false);
-        menuButton.GetComponent<Image>().color = black;
-        legoButton.GetComponent<Image>().color = black;
-        undoButton.GetComponent<Image>().color = black;
-        zoomInButton.GetComponent<Image>().color = black;
-        zoomOutButton.GetComponent<Image>().color = black;
+        HideHelpMenu();
+        HideAvatarMenu();
+        HideKitMenu();
+        menuButton.GetComponent<Image>().color = blackDark;
+        legoButton.GetComponent<Image>().color = blackDark;
+        undoButton.GetComponent<Image>().color = blackDark;
+        zoomInButton.GetComponent<Image>().color = blackDark;
+        zoomOutButton.GetComponent<Image>().color = blackDark;
+        nextInputTimer = 0;
         last_open = true;
         menuMode = false;
     }
@@ -669,7 +705,7 @@ public class MenuController : MonoBehaviour
 
         menuPanel.SetActive(false);
         UIpanel.SetActive(true);
-        menuButton.GetComponent<Image>().color = black;
+        menuButton.GetComponent<Image>().color = blackDark;
         menuMode = false;
     }
 
@@ -683,8 +719,7 @@ public class MenuController : MonoBehaviour
     public void HideLegoMenu()
     {
         legoPanel.SetActive(false);
-        legoButton.GetComponent<Image>().color = black;
-        menuMode = false;
+        legoButton.GetComponent<Image>().color = blackDark;
     }
 
     public void ShowLegoMenu()
@@ -736,9 +771,7 @@ public class MenuController : MonoBehaviour
     
     public void HideHelpMenu()
     {
-        help.GetComponent<Image>().color = blackDark;
         helpPanel.SetActive(false);
-        ShowMainMenu();
     }
 
     public void ShowAvatarMenu()
@@ -765,6 +798,7 @@ public class MenuController : MonoBehaviour
         bodyButton.GetComponent<Image>().color = blackDark;
         legButton.GetComponent<Image>().color = blackDark;
         saveButton.GetComponent<Image>().color = purple2;
+        avatarPanel.SetActive(false);
     }
 
     public void SwapAvatarHorizontal()
@@ -949,7 +983,6 @@ public class MenuController : MonoBehaviour
         else if(avatarBackButton.GetComponent<Image>().color != blackDark)
         {
             HideAvatarMenu();
-            avatarPanel.SetActive(false);
             menuPanel.SetActive(true);
         }
     }
@@ -1118,4 +1151,82 @@ public class MenuController : MonoBehaviour
         a_leg.GetComponent<Renderer>().material = avatar_colors[color_array[5]];
                 
     }
+
+    public void ShowKitMenu()
+    {
+        menuPanel.SetActive(false);
+        kitPanel.SetActive(true);
+        sphynxButton.GetComponent<Image>().color = blackLight;
+    }
+
+    public void SwapKitHorizontal()
+    {
+        if(sphynxButton.GetComponent<Image>().color != blackDark)
+        {
+            sphynxButton.GetComponent<Image>().color = blackDark;
+            pyramidButton.GetComponent<Image>().color = blackLight;
+        }
+        else if(pyramidButton.GetComponent<Image>().color != blackDark)
+        {
+            pyramidButton.GetComponent<Image>().color = blackDark;
+            sphynxButton.GetComponent<Image>().color = blackLight;
+        }
+    }
+
+    public void SwapKitVerticle()
+    {
+        if(sphynxButton.GetComponent<Image>().color != blackDark)
+        {
+            sphynxButton.GetComponent<Image>().color = blackDark;
+            kitBackButton.GetComponent<Image>().color = blackLight;
+        }
+        else if(pyramidButton.GetComponent<Image>().color != blackDark)
+        {
+            pyramidButton.GetComponent<Image>().color = blackDark;
+            kitBackButton.GetComponent<Image>().color = blackLight;
+        }
+        else if(kitBackButton.GetComponent<Image>().color != blackDark)
+        {
+            kitBackButton.GetComponent<Image>().color = blackDark;
+            sphynxButton.GetComponent<Image>().color = blackLight;
+        }
+    }
+
+    public void SelectKit()
+    {
+        if(sphynxButton.GetComponent<Image>().color != blackDark)
+        {
+
+            LegoController.kit_selection = 0;
+            LegoController.bottom_level = 6;
+            sphynxButton.GetComponent<Image>().color = blackDark;
+            kitPanel.SetActive(false);
+            ExitMenuMode();
+            LegoController.kit_mode = true;
+        }
+        else if(pyramidButton.GetComponent<Image>().color != blackDark)
+        {
+            LegoController.kit_selection = 1;
+            LegoController.bottom_level = 3;
+            pyramidButton.GetComponent<Image>().color = blackDark;
+            kitPanel.SetActive(false);
+            ExitMenuMode();
+            LegoController.kit_mode = true;
+        }
+        else if(kitBackButton.GetComponent<Image>().color != blackDark)
+        {
+            kitBackButton.GetComponent<Image>().color = blackDark;
+            kitPanel.SetActive(false);
+            ShowMainMenu();
+        }
+    }
+
+    public void HideKitMenu()
+    {
+        sphynxButton.GetComponent<Image>().color = blackDark;
+        pyramidButton.GetComponent<Image>().color = blackDark;
+        kitBackButton.GetComponent<Image>().color = blackDark;
+        kitPanel.SetActive(false);
+    }
+
 }

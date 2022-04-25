@@ -49,6 +49,9 @@ public class MenuController : MonoBehaviour
     public static int scale = 0;
     public static bool last_open = false;
 
+    public AudioSource audioSource;
+    public AudioClip scrollSound, selectMenuSound, multiConnectSound, multiJoinSound, exitSound, selectUISound;
+
     void Start()
     {
         timer = 0;
@@ -60,7 +63,7 @@ public class MenuController : MonoBehaviour
         HideAvatarMenu();
         HideKitMenu();
         LoadAvatar();
-        //ResetData();
+        audioSource.PlayOneShot(multiConnectSound);
     }
 
 
@@ -81,51 +84,64 @@ public class MenuController : MonoBehaviour
                 if(!menuMode)
                 {
                     EnterMenuMode();
+                    audioSource.PlayOneShot(scrollSound);
                 }
                 else if(!menuPanel.activeInHierarchy & !legoPanel.activeInHierarchy & !helpPanel.activeInHierarchy & !avatarPanel.activeInHierarchy & !kitPanel.activeInHierarchy)
                 {
                     SwapMenu();
+                    audioSource.PlayOneShot(scrollSound);
                 }
                 else if(avatarPanel.activeInHierarchy)
                 {
                     demoAvatar.transform.Rotate(0, 0, 45);
+                    audioSource.PlayOneShot(selectMenuSound);
                 }
             }
             else if(Input.GetButtonUp("A") & menuMode)
             {
                 ExitMenuMode();
+                audioSource.PlayOneShot(selectMenuSound);
             }
             else if(Input.GetButtonUp("B") & menuMode)
             {
                 if(menuPanel.activeInHierarchy)
                 {
                     SelectMainMenu();
+                    audioSource.PlayOneShot(selectUISound);
                 }
                 else if(legoPanel.activeInHierarchy)
                 {
                     SelectLego();
+                    audioSource.PlayOneShot(selectMenuSound);
                 }
                 else if (helpPanel.activeInHierarchy)
                 {
+                    audioSource.PlayOneShot(selectMenuSound);
                     HideHelpMenu();
+                    menuPanel.SetActive(true);
+                    help.GetComponent<Image>().color = blackLight;
                 }
                 else if(avatarPanel.activeInHierarchy)
                 {
                     SelectAvatar();
+                    audioSource.PlayOneShot(selectMenuSound);
                 }
                 else if(kitPanel.activeInHierarchy)
                 {
                     SelectKit();
+                    audioSource.PlayOneShot(selectMenuSound);
                 }
                 else
                 {
                     SelectMenu();
+                    audioSource.PlayOneShot(selectUISound);
                 }
                 
             }
             else if(Input.GetButtonUp("X") & menuMode)
             {
                 SelectAvatarColor();
+                audioSource.PlayOneShot(selectMenuSound);
             }
 
             var temp1 = Input.GetAxis("Horizontal");
@@ -139,15 +155,18 @@ public class MenuController : MonoBehaviour
                     if(temp1 > 0)
                     {
                         SwapLegoHorizontalR();
+                        audioSource.PlayOneShot(scrollSound);
                     }
                     else
                     {
                         SwapLegoHorizontalL();
+                        audioSource.PlayOneShot(scrollSound);
                     }
                 }
                 else
                 {
                     SwapLegoVertical();
+                    audioSource.PlayOneShot(scrollSound);
                 }
             }
             else if((temp1 != 0 | temp2 != 0) & timer > 0.3 & avatarPanel.activeInHierarchy)
@@ -157,6 +176,7 @@ public class MenuController : MonoBehaviour
                 {
                    
                     SwapAvatarHorizontal();
+                    audioSource.PlayOneShot(scrollSound);
                    
                 }
                 else
@@ -164,10 +184,12 @@ public class MenuController : MonoBehaviour
                     if(temp2 >0)
                     {
                         SwapAvatarVerticalU();
+                        audioSource.PlayOneShot(scrollSound);
                     }
                     else
                     {
                         SwapAvatarVerticalD();
+                        audioSource.PlayOneShot(scrollSound);
                     }
                 }
             }
@@ -180,10 +202,12 @@ public class MenuController : MonoBehaviour
                     if(temp1 > 0)
                     {
                         SwapMainMenuR();
+                        audioSource.PlayOneShot(scrollSound);
                     }
                     else
                     {
                         SwapMainMenuL();
+                        audioSource.PlayOneShot(scrollSound);
                     }
                 }
                 else
@@ -191,10 +215,12 @@ public class MenuController : MonoBehaviour
                     if(temp2 > 0)
                     {
                         SwapMainMenuUp();
+                        audioSource.PlayOneShot(scrollSound);
                     }
                     else
                     {
                         SwapMainMenuDown();
+                        audioSource.PlayOneShot(scrollSound);
                     }
                 }
             }
@@ -205,10 +231,12 @@ public class MenuController : MonoBehaviour
                 if(Mathf.Abs(temp1) > Mathf.Abs(temp2))
                 {
                     SwapKitHorizontal();
+                    audioSource.PlayOneShot(scrollSound);
                 }
                 else
                 {
                     SwapKitVerticle();
+                    audioSource.PlayOneShot(scrollSound);
                 }
             }
 
@@ -650,6 +678,7 @@ public class MenuController : MonoBehaviour
     {
         if(kit.GetComponent<Image>().color != blackDark)
         {
+            kit.GetComponent<Image>().color = blackDark;
             ShowKitMenu();
         }
         else if(multiplayer.GetComponent<Image>().color != blackDark)
@@ -658,10 +687,12 @@ public class MenuController : MonoBehaviour
         }
         else if(avatar.GetComponent<Image>().color != blackDark)
         {
+            avatar.GetComponent<Image>().color = blackDark;
             ShowAvatarMenu();
         }
         else if(help.GetComponent<Image>().color != blackDark)
         {
+            help.GetComponent<Image>().color = blackDark;
             ShowHelpMenu();
         }
         else if(sandbox.GetComponent<Image>().color != purple2)
@@ -998,6 +1029,7 @@ public class MenuController : MonoBehaviour
         {
             HideAvatarMenu();
             menuPanel.SetActive(true);
+            avatar.GetComponent<Image>().color = blackLight;
         }
     }
     public void SelectAvatarColor()

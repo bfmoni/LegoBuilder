@@ -12,7 +12,6 @@ public class LegoController : MonoBehaviour
 
 
 
-
     public Kit[] kits;
     public bool kit_placed = false;
     public bool kit_position = false;
@@ -22,7 +21,6 @@ public class LegoController : MonoBehaviour
     public static int bottom_level;
     public Kit current_kit;
 
-   
 
 
     //Lego Colors
@@ -36,6 +34,10 @@ public class LegoController : MonoBehaviour
     UnityEngine.Color lego_white = new Color32(244, 244, 244, 255);
     UnityEngine.Color lego_transparent = new Color32(255, 255, 255, 150);
     UnityEngine.Color lego_invisible = new Color32(255, 255, 255, 0);
+
+
+    public AudioSource audioSource;
+    public AudioClip legoSound, placeSound, finishSound;
 
 
     // Start is called before the first frame update
@@ -64,20 +66,24 @@ public class LegoController : MonoBehaviour
                 if(Input.GetButtonUp("B"))
                 {
                     ConfirmLego();
+                    audioSource.PlayOneShot(placeSound);
                 }
                 if(Input.GetButtonUp("A"))
                 {
                     GameObject.DestroyImmediate(current_lego.gameObject);
                     current_lego = null;
                     PlayerMovement.lego_selected = false;
+                    audioSource.PlayOneShot(legoSound);
                 }
                 if(Input.GetButtonUp("X"))
                 {
                     ColorCycle();
+                    audioSource.PlayOneShot(legoSound);
                 }
                 if(Input.GetButtonUp("Y"))
                 {
                     current_lego.transform.Rotate(0,90,0);
+                    audioSource.PlayOneShot(legoSound);
                 }
             }
         }
@@ -110,6 +116,7 @@ public class LegoController : MonoBehaviour
                 if(Input.GetButtonUp("B") && !MenuController.last_open)
                 {
                     ConfirmKit();
+                    audioSource.PlayOneShot(placeSound);
                 }
 
                 else if(Input.GetButtonUp("A") && !MenuController.last_open)
@@ -117,11 +124,13 @@ public class LegoController : MonoBehaviour
                     GameObject.DestroyImmediate(current_kit.gameObject);
                     current_kit = null;
                     kit_mode = false;
+                    audioSource.PlayOneShot(legoSound);
                 }
 
                 else if(Input.GetButtonUp("Y") && !MenuController.last_open)
                 {
                     current_kit.transform.Rotate(0,90,0);
+                    audioSource.PlayOneShot(legoSound);
                 }
 
             }
@@ -148,8 +157,6 @@ public class LegoController : MonoBehaviour
                     {
                         if(current_lego.transform.position == current_kit.kit_legos[kit_step].transform.position)
                         {
-                            //GameObject.DestroyImmediate(current_kit.kit_legos[kit_step].gameObject);
-                            //current_kit.kit_legos[kit_step] = null;
                             current_kit.kit_legos[kit_step].gameObject.SetActive(false);
                             PlayerMovement.placed_legos.Push(current_lego);
                             current_lego.Collider.enabled = true;
@@ -159,6 +166,7 @@ public class LegoController : MonoBehaviour
                             kit_step++;
                             if(kit_step < current_kit.kit_legos.Length)
                             {
+                                audioSource.PlayOneShot(legoSound);
                                 int numChildren = current_kit.kit_legos[kit_step].transform.childCount;
 
                                 for(int j = 0; j < numChildren; j++)
@@ -169,6 +177,7 @@ public class LegoController : MonoBehaviour
                             }
                             else
                             {
+                                audioSource.PlayOneShot(finishSound);
                                 GameObject.DestroyImmediate(current_kit.gameObject);
                                 current_kit = null;
                                 kit_step = -1;
@@ -188,14 +197,17 @@ public class LegoController : MonoBehaviour
                         kit_mode = false;
                         current_kit = null;
                         current_lego = null;
+                        audioSource.PlayOneShot(legoSound);
                     }
                     if(Input.GetButtonUp("X"))
                     {
                         ColorCycle();
+                        audioSource.PlayOneShot(legoSound);
                     }
                     if(Input.GetButtonUp("Y"))
                     {
                         current_lego.transform.Rotate(0,90,0);
+                        audioSource.PlayOneShot(legoSound);
                     }
                 }
 

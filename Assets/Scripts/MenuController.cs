@@ -722,6 +722,17 @@ public class MenuController : MonoBehaviour
     {
         legoPanel.SetActive(false);
         legoButton.GetComponent<Image>().color = blackDark;
+        onex1.GetComponent<Image>().color = clear;
+        onex2.GetComponent<Image>().color = clear;
+        onex3.GetComponent<Image>().color = clear;
+        onex4.GetComponent<Image>().color = clear;
+        onex6.GetComponent<Image>().color = clear;
+        onex8.GetComponent<Image>().color = clear;
+        twox2.GetComponent<Image>().color = clear;
+        twox3.GetComponent<Image>().color = clear;
+        twox4.GetComponent<Image>().color = clear;
+        twox6.GetComponent<Image>().color = clear;
+        twox8.GetComponent<Image>().color = clear;
     }
 
     public void ShowLegoMenu()

@@ -63,6 +63,7 @@ public class MenuController : MonoBehaviour
         HideAvatarMenu();
         HideKitMenu();
         LoadAvatar();
+        //ResetData();
         audioSource.PlayOneShot(multiConnectSound);
     }
 

@@ -166,7 +166,7 @@ public class LegoController : MonoBehaviour
                             kit_step++;
                             if(kit_step < current_kit.kit_legos.Length)
                             {
-                                audioSource.PlayOneShot(legoSound);
+                                audioSource.PlayOneShot(placeSound);
                                 int numChildren = current_kit.kit_legos[kit_step].transform.childCount;
 
                                 for(int j = 0; j < numChildren; j++)

@@ -8,7 +8,7 @@ public class MenuController : MonoBehaviour
 {
     public Canvas mainCanvas;
     //panels
-    public GameObject UIpanel, menuPanel, legoPanel, helpPanel, avatarPanel, kitPanel;
+    public GameObject UIpanel, menuPanel, legoPanel, helpPanel, avatarPanel, kitPanel, multiPanel, connectedPanel;
 
     //top menu buttons
     public Button menuButton, legoButton, undoButton, zoomInButton, zoomOutButton;
@@ -22,13 +22,18 @@ public class MenuController : MonoBehaviour
     public GameObject hat, face, back, hand, chest, leg, skin, demoAvatar;
     //kit buttons
     public GameObject sphynxButton, pyramidButton, kitBackButton;
+    //multiplayer buttons
+    public Button number1, number2, number3, number4, number5, number6, number7, number8, number9, number0, numberDel, joinButton, multibackButton;
+    public Button connectedBackButton, disconnectButton;
+    public Text pinText, connectedPinText;
+    public String pinValue;
+    public bool connected;
 
+    //avatar pieces
     public GameObject a_hat,a_face,a_back,a_hand,a_chest,a_leg,a_skin;
     public GameObject cameraParent, minifig;
-
     public int [] avatar_color_array = new int [6];
     public int [] avatar_piece_array = new int [4];
-
     public int [] temp_color_array = new int [6];
     public int [] temp_piece_array = new int [4];
     public  Material[] face_array;
@@ -37,6 +42,7 @@ public class MenuController : MonoBehaviour
     public  GameObject[] back_array;
     public  GameObject[] hat_array;
     
+    //button colors
     UnityEngine.Color blackDark = new Color32(54, 54, 54, 255);
     UnityEngine.Color blackLight = new Color32(100, 100, 100, 255);
     UnityEngine.Color clear = new Color32(39, 39, 39, 0);
@@ -62,9 +68,12 @@ public class MenuController : MonoBehaviour
         HideHelpMenu();
         HideAvatarMenu();
         HideKitMenu();
+        HideMultiMenu();
+        HideConnectedMenu();
         LoadAvatar();
         //ResetData();
         audioSource.PlayOneShot(multiConnectSound);
+        connected = false;
     }
 
 
@@ -84,13 +93,13 @@ public class MenuController : MonoBehaviour
             {
                 if(!menuMode)
                 {
+                    audioSource.PlayOneShot(scrollSound);
                     EnterMenuMode();
-                    audioSource.PlayOneShot(scrollSound);
                 }
-                else if(!menuPanel.activeInHierarchy & !legoPanel.activeInHierarchy & !helpPanel.activeInHierarchy & !avatarPanel.activeInHierarchy & !kitPanel.activeInHierarchy)
+                else if(!menuPanel.activeInHierarchy & !legoPanel.activeInHierarchy & !helpPanel.activeInHierarchy & !avatarPanel.activeInHierarchy & !kitPanel.activeInHierarchy & !multiPanel.activeInHierarchy & !connectedPanel.activeInHierarchy)
                 {
-                    SwapMenu();
                     audioSource.PlayOneShot(scrollSound);
+                    SwapMenu();
                 }
                 else if(avatarPanel.activeInHierarchy)
                 {
@@ -100,20 +109,20 @@ public class MenuController : MonoBehaviour
             }
             else if(Input.GetButtonUp("A") & menuMode)
             {
-                ExitMenuMode();
                 audioSource.PlayOneShot(selectMenuSound);
+                ExitMenuMode();
             }
             else if(Input.GetButtonUp("B") & menuMode)
             {
                 if(menuPanel.activeInHierarchy)
                 {
-                    SelectMainMenu();
                     audioSource.PlayOneShot(selectUISound);
+                    SelectMainMenu();
                 }
                 else if(legoPanel.activeInHierarchy)
                 {
-                    SelectLego();
                     audioSource.PlayOneShot(selectMenuSound);
+                    SelectLego();
                 }
                 else if (helpPanel.activeInHierarchy)
                 {
@@ -124,25 +133,35 @@ public class MenuController : MonoBehaviour
                 }
                 else if(avatarPanel.activeInHierarchy)
                 {
-                    SelectAvatar();
                     audioSource.PlayOneShot(selectMenuSound);
+                    SelectAvatar();
                 }
                 else if(kitPanel.activeInHierarchy)
                 {
-                    SelectKit();
                     audioSource.PlayOneShot(selectMenuSound);
+                    SelectKit();
+                }
+                else if(multiPanel.activeInHierarchy)
+                {
+                    audioSource.PlayOneShot(selectMenuSound);
+                    SelectMultiMenu();
+                }
+                else if(connectedPanel.activeInHierarchy)
+                {
+                    audioSource.PlayOneShot(selectMenuSound);
+                    SelectConnectedMenu();
                 }
                 else
                 {
-                    SelectMenu();
                     audioSource.PlayOneShot(selectUISound);
+                    SelectMenu();
                 }
                 
             }
             else if(Input.GetButtonUp("X") & menuMode)
             {
-                SelectAvatarColor();
                 audioSource.PlayOneShot(selectMenuSound);
+                SelectAvatarColor();
             }
 
             var temp1 = Input.GetAxis("Horizontal");
@@ -155,19 +174,19 @@ public class MenuController : MonoBehaviour
                 {
                     if(temp1 > 0)
                     {
-                        SwapLegoHorizontalR();
                         audioSource.PlayOneShot(scrollSound);
+                        SwapLegoHorizontalR();
                     }
                     else
                     {
-                        SwapLegoHorizontalL();
                         audioSource.PlayOneShot(scrollSound);
+                        SwapLegoHorizontalL();
                     }
                 }
                 else
                 {
-                    SwapLegoVertical();
                     audioSource.PlayOneShot(scrollSound);
+                    SwapLegoVertical();
                 }
             }
             else if((temp1 != 0 | temp2 != 0) & timer > 0.3 & avatarPanel.activeInHierarchy)
@@ -175,22 +194,20 @@ public class MenuController : MonoBehaviour
                 timer = 0;
                 if(Mathf.Abs(temp1) > Mathf.Abs(temp2))
                 {
-                   
+                   audioSource.PlayOneShot(scrollSound);
                     SwapAvatarHorizontal();
-                    audioSource.PlayOneShot(scrollSound);
-                   
                 }
                 else
                 {
                     if(temp2 >0)
                     {
-                        SwapAvatarVerticalU();
                         audioSource.PlayOneShot(scrollSound);
+                        SwapAvatarVerticalU();
                     }
                     else
                     {
-                        SwapAvatarVerticalD();
                         audioSource.PlayOneShot(scrollSound);
+                        SwapAvatarVerticalD();
                     }
                 }
             }
@@ -202,26 +219,26 @@ public class MenuController : MonoBehaviour
                 {
                     if(temp1 > 0)
                     {
-                        SwapMainMenuR();
                         audioSource.PlayOneShot(scrollSound);
+                        SwapMainMenuR();
                     }
                     else
                     {
-                        SwapMainMenuL();
                         audioSource.PlayOneShot(scrollSound);
+                        SwapMainMenuL();
                     }
                 }
                 else
                 {
                     if(temp2 > 0)
                     {
-                        SwapMainMenuUp();
                         audioSource.PlayOneShot(scrollSound);
+                        SwapMainMenuUp();
                     }
                     else
                     {
-                        SwapMainMenuDown();
                         audioSource.PlayOneShot(scrollSound);
+                        SwapMainMenuDown();
                     }
                 }
             }
@@ -231,14 +248,52 @@ public class MenuController : MonoBehaviour
                 timer = 0;
                 if(Mathf.Abs(temp1) > Mathf.Abs(temp2))
                 {
-                    SwapKitHorizontal();
                     audioSource.PlayOneShot(scrollSound);
+                    SwapKitHorizontal();
                 }
                 else
                 {
-                    SwapKitVerticle();
                     audioSource.PlayOneShot(scrollSound);
+                    SwapKitVerticle();
                 }
+            }
+
+            else if((temp1 != 0 | temp2 != 0) & timer > 0.3 & multiPanel.activeInHierarchy)
+            {
+                timer = 0;
+                if(Mathf.Abs(temp1) > Mathf.Abs(temp2))
+                {
+                    if(temp1 > 0)
+                    {
+                        audioSource.PlayOneShot(scrollSound);
+                        SwapMultiHorizontalR();
+                    }
+                    else
+                    {
+                        audioSource.PlayOneShot(scrollSound);
+                        SwapMultiHorizontalL();
+                    }
+                }
+                else
+                {
+                    if(temp2 > 0)
+                    {
+                        audioSource.PlayOneShot(scrollSound);
+                        SwapMultiVerticleU();
+                    }
+                    else
+                    {
+                        audioSource.PlayOneShot(scrollSound);
+                        SwapMultiVerticleD();
+                    }
+                }
+            }
+
+            else if(temp1 != 0 & timer > 0.3 & connectedPanel.activeInHierarchy)
+            {
+                timer = 0;
+                audioSource.PlayOneShot(scrollSound);
+                SwapConnectedMenu();
             }
 
         }
@@ -295,6 +350,8 @@ public class MenuController : MonoBehaviour
         HideKitMenu();
         HideHelpMenu();
         HideAvatarMenu();
+        HideMultiMenu();
+        HideConnectedMenu();
         menuButton.GetComponent<Image>().color = blackDark;
         legoButton.GetComponent<Image>().color = blackDark;
         undoButton.GetComponent<Image>().color = blackDark;
@@ -684,7 +741,15 @@ public class MenuController : MonoBehaviour
         }
         else if(multiplayer.GetComponent<Image>().color != blackDark)
         {
-            //TODO
+            multiplayer.GetComponent<Image>().color = blackDark;
+            if(connected)
+            {
+                ShowConnectedMenu();
+            }
+            else
+            {
+                ShowMultiMenu();
+            }
         }
         else if(avatar.GetComponent<Image>().color != blackDark)
         {
@@ -719,6 +784,8 @@ public class MenuController : MonoBehaviour
         HideHelpMenu();
         HideAvatarMenu();
         HideKitMenu();
+        HideMultiMenu();
+        HideConnectedMenu();
         menuButton.GetComponent<Image>().color = blackDark;
         legoButton.GetComponent<Image>().color = blackDark;
         undoButton.GetComponent<Image>().color = blackDark;
@@ -1023,7 +1090,6 @@ public class MenuController : MonoBehaviour
             Array.Copy(temp_piece_array, avatar_piece_array, avatar_piece_array.Length);
             SwapAvatarModel();
             SaveAvatar();
-            HideAvatarMenu();
             ExitMenuMode();
         }
         else if(avatarBackButton.GetComponent<Image>().color != blackDark)
@@ -1276,6 +1342,458 @@ public class MenuController : MonoBehaviour
         kitPanel.SetActive(false);
     }
 
+    public void HideMultiMenu()
+    {
+        number0.GetComponent<Image>().color = blackDark;
+        number1.GetComponent<Image>().color = blackDark;
+        number2.GetComponent<Image>().color = blackDark;
+        number3.GetComponent<Image>().color = blackDark;
+        number4.GetComponent<Image>().color = blackDark;
+        number5.GetComponent<Image>().color = blackDark;
+        number6.GetComponent<Image>().color = blackDark;
+        number7.GetComponent<Image>().color = blackDark;
+        number8.GetComponent<Image>().color = blackDark;
+        number9.GetComponent<Image>().color = blackDark;
+        joinButton.GetComponent<Image>().color = purple2;
+        multibackButton.GetComponent<Image>().color = blackDark;
+        pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+        multiPanel.SetActive(false);
+    }
+
+    public void ShowMultiMenu()
+    {
+        menuPanel.SetActive(false);
+        multiPanel.SetActive(true);
+        number1.GetComponent<Image>().color = blackLight;
+        number0.GetComponent<Image>().color = blackDark;
+        number2.GetComponent<Image>().color = blackDark;
+        number3.GetComponent<Image>().color = blackDark;
+        number4.GetComponent<Image>().color = blackDark;
+        number5.GetComponent<Image>().color = blackDark;
+        number6.GetComponent<Image>().color = blackDark;
+        number7.GetComponent<Image>().color = blackDark;
+        number8.GetComponent<Image>().color = blackDark;
+        number9.GetComponent<Image>().color = blackDark;
+        numberDel.GetComponent<Image>().color = blackDark;
+        joinButton.GetComponent<Image>().color = purple2;
+    }
+
+    public void SelectMultiMenu()
+    {
+        if(number0.GetComponent<Image>().color != blackDark)
+        {
+            if(pinValue.Equals("----"))
+            {
+                pinValue = "0";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+            else if(pinValue.Length < 4)
+            {
+                pinValue = pinValue + "0";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+        }
+        else if(number1.GetComponent<Image>().color != blackDark)
+        {
+            if(pinValue.Equals("----"))
+            {
+                pinValue = "1";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+            else if(pinValue.Length < 4)
+            {
+                pinValue = pinValue + "1";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+        }
+        else if(number2.GetComponent<Image>().color != blackDark)
+        {
+            if(pinValue.Equals("----"))
+            {
+                pinValue = "2";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+            else if(pinValue.Length < 4)
+            {
+                pinValue = pinValue + "2";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+        }
+        else if(number3.GetComponent<Image>().color != blackDark)
+        {
+            if(pinValue.Equals("----"))
+            {
+                pinValue = "3";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+            else if(pinValue.Length < 4)
+            {
+                pinValue = pinValue + "3";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+        }
+        else if(number4.GetComponent<Image>().color != blackDark)
+        {
+            if(pinValue.Equals("----"))
+            {
+                pinValue = "4";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+            else if(pinValue.Length < 4)
+            {
+                pinValue = pinValue + "4";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+        }
+        else if(number5.GetComponent<Image>().color != blackDark)
+        {
+            if(pinValue.Equals("----"))
+            {
+                pinValue = "5";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+            else if(pinValue.Length < 4)
+            {
+                pinValue = pinValue + "5";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+        }
+        else if(number6.GetComponent<Image>().color != blackDark)
+        {
+            if(pinValue.Equals("----"))
+            {
+                pinValue = "6";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+            else if(pinValue.Length < 4)
+            {
+                pinValue = pinValue + "6";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+        }
+        else if(number7.GetComponent<Image>().color != blackDark)
+        {
+            if(pinValue.Equals("----"))
+            {
+                pinValue = "7";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+            else if(pinValue.Length < 4)
+            {
+                pinValue = pinValue + "7";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+        }
+        else if(number8.GetComponent<Image>().color != blackDark)
+        {
+            if(pinValue.Equals("----"))
+            {
+                pinValue = "8";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+            else if(pinValue.Length < 4)
+            {
+                pinValue = pinValue + "8";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+        }
+        else if(number9.GetComponent<Image>().color != blackDark)
+        {
+            if(pinValue.Equals("----"))
+            {
+                pinValue = "9";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+            else if(pinValue.Length < 4)
+            {
+                pinValue = pinValue + "9";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+        }
+        else if(numberDel.GetComponent<Image>().color != blackDark)
+        {
+            
+            if(pinValue.Length > 1 & !pinValue.Equals("----"))
+            {
+                pinValue = pinValue.Remove(pinValue.Length-1);
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+            else if (pinValue.Length == 1)
+            {
+                pinValue = "----";
+                pinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+            }
+        }
+        else if(multibackButton.GetComponent<Image>().color != blackDark)
+        {
+            HideMultiMenu();
+            ShowMainMenu();
+        }
+        else if(joinButton.GetComponent<Image>().color != purple2)
+        {
+            //TODO join multiplayer group using pinValue
+            connected = true;
+            ExitMenuMode();
+        }
+
+    }
+
+    public void SwapMultiHorizontalR()
+    {
+        if(number0.GetComponent<Image>().color != blackDark)
+        {
+            number0.GetComponent<Image>().color = blackDark;
+            numberDel.GetComponent<Image>().color = blackLight;
+        }
+        else if(number1.GetComponent<Image>().color != blackDark)
+        {
+            number1.GetComponent<Image>().color = blackDark;
+            number2.GetComponent<Image>().color = blackLight;
+        }
+        else if(number2.GetComponent<Image>().color != blackDark)
+        {
+            number2.GetComponent<Image>().color = blackDark;
+            number3.GetComponent<Image>().color = blackLight;
+        }
+        else if(number3.GetComponent<Image>().color != blackDark)
+        {
+            number3.GetComponent<Image>().color = blackDark;
+            number1.GetComponent<Image>().color = blackLight;
+        }
+        else if(number4.GetComponent<Image>().color != blackDark)
+        {
+            number4.GetComponent<Image>().color = blackDark;
+            number5.GetComponent<Image>().color = blackLight;
+        }
+        else if(number5.GetComponent<Image>().color != blackDark)
+        {
+            number5.GetComponent<Image>().color = blackDark;
+            number6.GetComponent<Image>().color = blackLight;
+        }
+        else if(number6.GetComponent<Image>().color != blackDark)
+        {
+            number6.GetComponent<Image>().color = blackDark;
+            number4.GetComponent<Image>().color = blackLight;
+        }
+        else if(number7.GetComponent<Image>().color != blackDark)
+        {
+            number7.GetComponent<Image>().color = blackDark;
+            number8.GetComponent<Image>().color = blackLight;
+        }
+        else if(number8.GetComponent<Image>().color != blackDark)
+        {
+            number8.GetComponent<Image>().color = blackDark;
+            number9.GetComponent<Image>().color = blackLight;
+        }
+        else if(number9.GetComponent<Image>().color != blackDark)
+        {
+            number9.GetComponent<Image>().color = blackDark;
+            number7.GetComponent<Image>().color = blackLight;
+        }
+        else if(numberDel.GetComponent<Image>().color != blackDark)
+        {
+            numberDel.GetComponent<Image>().color = blackDark;
+            number0.GetComponent<Image>().color = blackLight;
+        }
+    }
+
+    public void SwapMultiHorizontalL()
+    {
+        if(number0.GetComponent<Image>().color != blackDark)
+        {
+            number0.GetComponent<Image>().color = blackDark;
+            numberDel.GetComponent<Image>().color = blackLight;
+        }
+        else if(number1.GetComponent<Image>().color != blackDark)
+        {
+            number1.GetComponent<Image>().color = blackDark;
+            number3.GetComponent<Image>().color = blackLight;
+        }
+        else if(number2.GetComponent<Image>().color != blackDark)
+        {
+            number2.GetComponent<Image>().color = blackDark;
+            number1.GetComponent<Image>().color = blackLight;
+        }
+        else if(number3.GetComponent<Image>().color != blackDark)
+        {
+            number3.GetComponent<Image>().color = blackDark;
+            number2.GetComponent<Image>().color = blackLight;
+        }
+        else if(number4.GetComponent<Image>().color != blackDark)
+        {
+            number4.GetComponent<Image>().color = blackDark;
+            number6.GetComponent<Image>().color = blackLight;
+        }
+        else if(number5.GetComponent<Image>().color != blackDark)
+        {
+            number5.GetComponent<Image>().color = blackDark;
+            number4.GetComponent<Image>().color = blackLight;
+        }
+        else if(number6.GetComponent<Image>().color != blackDark)
+        {
+            number6.GetComponent<Image>().color = blackDark;
+            number5.GetComponent<Image>().color = blackLight;
+        }
+        else if(number7.GetComponent<Image>().color != blackDark)
+        {
+            number7.GetComponent<Image>().color = blackDark;
+            number9.GetComponent<Image>().color = blackLight;
+        }
+        else if(number8.GetComponent<Image>().color != blackDark)
+        {
+            number8.GetComponent<Image>().color = blackDark;
+            number7.GetComponent<Image>().color = blackLight;
+        }
+        else if(number9.GetComponent<Image>().color != blackDark)
+        {
+            number9.GetComponent<Image>().color = blackDark;
+            number8.GetComponent<Image>().color = blackLight;
+        }
+        else if(numberDel.GetComponent<Image>().color != blackDark)
+        {
+            numberDel.GetComponent<Image>().color = blackDark;
+            number0.GetComponent<Image>().color = blackLight;
+        }
+    }
+
+    public void SwapMultiVerticleU()
+    {
+        if(number0.GetComponent<Image>().color != blackDark)
+        {
+            number0.GetComponent<Image>().color = blackDark;
+            number8.GetComponent<Image>().color = blackLight;
+        }
+        else if(number1.GetComponent<Image>().color != blackDark)
+        {
+            number1.GetComponent<Image>().color = blackDark;
+            multibackButton.GetComponent<Image>().color = blackLight;
+        }
+        else if(number2.GetComponent<Image>().color != blackDark)
+        {
+            number2.GetComponent<Image>().color = blackDark;
+            multibackButton.GetComponent<Image>().color = blackLight;
+        }
+        else if(number3.GetComponent<Image>().color != blackDark)
+        {
+            number3.GetComponent<Image>().color = blackDark;
+            multibackButton.GetComponent<Image>().color = blackLight;
+        }
+        else if(number4.GetComponent<Image>().color != blackDark)
+        {
+            number4.GetComponent<Image>().color = blackDark;
+            number1.GetComponent<Image>().color = blackLight;
+        }
+        else if(number5.GetComponent<Image>().color != blackDark)
+        {
+            number5.GetComponent<Image>().color = blackDark;
+            number2.GetComponent<Image>().color = blackLight;
+        }
+        else if(number6.GetComponent<Image>().color != blackDark)
+        {
+            number6.GetComponent<Image>().color = blackDark;
+            number3.GetComponent<Image>().color = blackLight;
+        }
+        else if(number7.GetComponent<Image>().color != blackDark)
+        {
+            number7.GetComponent<Image>().color = blackDark;
+            number4.GetComponent<Image>().color = blackLight;
+        }
+        else if(number8.GetComponent<Image>().color != blackDark)
+        {
+            number8.GetComponent<Image>().color = blackDark;
+            number5.GetComponent<Image>().color = blackLight;
+        }
+        else if(number9.GetComponent<Image>().color != blackDark)
+        {
+            number9.GetComponent<Image>().color = blackDark;
+            number6.GetComponent<Image>().color = blackLight;
+        }
+        else if(numberDel.GetComponent<Image>().color != blackDark)
+        {
+            numberDel.GetComponent<Image>().color = blackDark;
+            number9.GetComponent<Image>().color = blackLight;
+        }
+        else if(multibackButton.GetComponent<Image>().color != blackDark)
+        {
+            multibackButton.GetComponent<Image>().color = blackDark;
+            joinButton.GetComponent<Image>().color = blackLight;
+        }
+        else if(joinButton.GetComponent<Image>().color != purple2)
+        {
+            joinButton.GetComponent<Image>().color = purple2;
+            number0.GetComponent<Image>().color = blackLight;
+        }
+    }
+
+    public void SwapMultiVerticleD()
+    {
+        if(number0.GetComponent<Image>().color != blackDark)
+        {
+            number0.GetComponent<Image>().color = blackDark;
+            joinButton.GetComponent<Image>().color = blackLight;
+        }
+        else if(number1.GetComponent<Image>().color != blackDark)
+        {
+            number1.GetComponent<Image>().color = blackDark;
+            number4.GetComponent<Image>().color = blackLight;
+        }
+        else if(number2.GetComponent<Image>().color != blackDark)
+        {
+            number2.GetComponent<Image>().color = blackDark;
+            number5.GetComponent<Image>().color = blackLight;
+        }
+        else if(number3.GetComponent<Image>().color != blackDark)
+        {
+            number3.GetComponent<Image>().color = blackDark;
+            number6.GetComponent<Image>().color = blackLight;
+        }
+        else if(number4.GetComponent<Image>().color != blackDark)
+        {
+            number4.GetComponent<Image>().color = blackDark;
+            number7.GetComponent<Image>().color = blackLight;
+        }
+        else if(number5.GetComponent<Image>().color != blackDark)
+        {
+            number5.GetComponent<Image>().color = blackDark;
+            number8.GetComponent<Image>().color = blackLight;
+        }
+        else if(number6.GetComponent<Image>().color != blackDark)
+        {
+            number6.GetComponent<Image>().color = blackDark;
+            number9.GetComponent<Image>().color = blackLight;
+        }
+        else if(number7.GetComponent<Image>().color != blackDark)
+        {
+            number7.GetComponent<Image>().color = blackDark;
+            number0.GetComponent<Image>().color = blackLight;
+        }
+        else if(number8.GetComponent<Image>().color != blackDark)
+        {
+            number8.GetComponent<Image>().color = blackDark;
+            number0.GetComponent<Image>().color = blackLight;
+        }
+        else if(number9.GetComponent<Image>().color != blackDark)
+        {
+            number9.GetComponent<Image>().color = blackDark;
+            numberDel.GetComponent<Image>().color = blackLight;
+        }
+        else if(numberDel.GetComponent<Image>().color != blackDark)
+        {
+            numberDel.GetComponent<Image>().color = blackDark;
+            joinButton.GetComponent<Image>().color = blackLight;
+        }
+        else if(multibackButton.GetComponent<Image>().color != blackDark)
+        {
+            multibackButton.GetComponent<Image>().color = blackDark;
+            number3.GetComponent<Image>().color = blackLight;
+        }
+        else if(joinButton.GetComponent<Image>().color != purple2)
+        {
+            joinButton.GetComponent<Image>().color = purple2;
+            multibackButton.GetComponent<Image>().color = blackLight;
+        }
+    }
+
     public void SaveAvatar()
     {
         //color_array
@@ -1289,6 +1807,51 @@ public class MenuController : MonoBehaviour
             PlayerPrefs.SetInt("piece" + i, avatar_piece_array[i]);
         }
         PlayerPrefs.Save();
+    }
+
+    public void HideConnectedMenu()
+    {
+        connectedBackButton.GetComponent<Image>().color = blackDark;
+        disconnectButton.GetComponent<Image>().color = purple2;
+        connectedPanel.SetActive(false);
+    }
+
+    public void ShowConnectedMenu()
+    {
+        menuPanel.SetActive(false);
+        connectedPanel.SetActive(true);
+        connectedPinText.GetComponent<UnityEngine.UI.Text>().text = pinValue;
+        connectedBackButton.GetComponent<Image>().color = blackDark;
+        disconnectButton.GetComponent<Image>().color = blackLight;
+    }
+
+    public void SwapConnectedMenu()
+    {
+        if(connectedBackButton.GetComponent<Image>().color != blackDark)
+        {
+            connectedBackButton.GetComponent<Image>().color = blackDark;
+            disconnectButton.GetComponent<Image>().color = blackLight;
+        }
+        else if(disconnectButton.GetComponent<Image>().color != purple2)
+        {
+            disconnectButton.GetComponent<Image>().color = purple2;
+            connectedBackButton.GetComponent<Image>().color = blackLight;
+        }
+    }
+    public void SelectConnectedMenu()
+    {
+        if(disconnectButton.GetComponent<Image>().color != purple2)
+        {
+            //TODO disconnect
+            connected = false;
+            ExitMenuMode();
+        }
+        else if (connectedBackButton.GetComponent<Image>().color != blackDark)
+        {
+            HideConnectedMenu();
+            ShowMainMenu();
+        }
+        
     }
 
     public void LoadAvatar()

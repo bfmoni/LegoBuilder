@@ -6,6 +6,7 @@ using Photon.Pun;
 
 public class PlayerMovement : MonoBehaviourPun//, IPunObservable
 {
+    private PhotonView PV;
     public static float speed = 8;
     private Vector3 moveDirection;
     private CharacterController controller;
@@ -26,15 +27,24 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
 
     void Start()
     {
+        PV = GetComponent<PhotonView>();
         placed_legos = new Stack<Lego>();
         controller=GetComponent<CharacterController>();
         lego_selected = false;
+        if(PV.IsMine)
+        {
+            cameraParent.SetActive(true);
+        }
+        else
+        {
+            cameraParent.SetActive(false);
+        }
        
     }
 
     void Update()
     {
-        if (!this.photonView.IsMine)
+        if (!PV.IsMine)
         {
             return;
         }

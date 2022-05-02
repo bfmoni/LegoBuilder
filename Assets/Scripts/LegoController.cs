@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class LegoController : MonoBehaviourPun
 {
@@ -9,6 +10,7 @@ public class LegoController : MonoBehaviourPun
     // holds all the lego prefabs 0-5 is 1x 6-10 is 2x prefab 11 is L shape
     public Lego[] all_legos;
     public Lego current_lego;
+    //public GameObject current_lego;
     public bool PositionOk;
 
 
@@ -62,6 +64,8 @@ public class LegoController : MonoBehaviourPun
                 if(Input.GetButtonUp("B") && !MenuController.last_open)
                 {
                     current_lego = Instantiate(all_legos[MenuController.selectedBlock]);
+                    //current_lego = PhotonNetwork.Instantiate(GetLego(), new Vector3(0,0,0), Quaternion.identity, 0);
+                    //current_lego = PhotonNetwork.Instantiate(all_legos[MenuController.selectedBlock].name, new Vector3(0,0,0), Quaternion.identity, 0);
                     current_lego.Collider.enabled = false;
                     PlayerMovement.lego_selected = true;
                 }
@@ -105,7 +109,10 @@ public class LegoController : MonoBehaviourPun
             {
                 if(current_kit == null)
                 {
+                    //TODO
                     current_kit = Instantiate(kits[kit_selection]);
+                    
+                    //current_kit = PhotonNetwork.Instantiate(kits[kit_selection], new Vector3(0,0,0), Quaternion.identity, 0);
                     for(int i = 0; i < current_kit.kit_legos.Length; i++)
                     {
                         current_kit.kit_legos[i].gameObject.SetActive(true);
@@ -145,7 +152,9 @@ public class LegoController : MonoBehaviourPun
                 //spawn appropriate lego for step
                 if(current_lego == null)
                 {
+                    //TODO
                     current_lego = Instantiate(current_kit.kit_legos[kit_step]);
+                    //current_lego = PhotonNetwork.Instantiate(current_kit.kit_legos[kit_step], new Vector3(0,0,0), Quaternion.identity, 0);
                     current_lego.Collider.enabled = false;
                     PlayerMovement.lego_selected = true;
                     int numChildren = current_lego.transform.childCount;
@@ -356,79 +365,6 @@ public class LegoController : MonoBehaviourPun
 
         }
 
-            
-    }
-
-
-
-
-
-    public bool PlaceKit()
-    {
-        int last_level = 0;
-        kit_position = false;
-        if (Physics.Raycast(Camera.main.transform.position - Vector3.up * 0.1f , Camera.main.transform.forward, out var hitInfo, 100, GridController.LegoLayer))
-        {
-            Vector3 p = GridController.SnapToGrid(hitInfo.point);
-            //bottom layer check
-            for(int i = 0; i< bottom_level; i++)
-            {
-                int level = 0;
-                Lego child = current_kit.kit_legos[i];
-                var placePosition = p;
-                for (int j = 0; j < 10; i++)
-                {
-                    PositionOk = false;
-                    var collider = Physics.OverlapBox( p + new Vector3(0,level,0) + child.transform.rotation *child.Collider.center, child.Collider.size / 2, child.transform.rotation, GridController.LegoLayer);
-                    PositionOk = collider.Length == 0;
-                    if (PositionOk)
-                    {
-                        if(i == 0)
-                        {
-                            last_level = level;
-                        }
-
-                        if(level != last_level)
-                        {
-                            current_kit.transform.position = p;
-                            return false;
-                        }
-                        break;
-                    }
-                    else
-                    {
-                        level++;
-                    }
-                }
-                
-            }
-             
-
-            //rest of the blocks
-            int numChildren = current_kit.kit_legos.Length;
-            for(int i = bottom_level; i < numChildren; i++)
-            {
-                PositionOk = false;
-                Lego child = current_kit.kit_legos[i];
-                var collider = Physics.OverlapBox(new Vector3(0,last_level,0) +child.Collider.center, child.Collider.size / 2, child.transform.rotation, GridController.LegoLayer);
-                PositionOk = collider.Length == 0;
-                if (PositionOk)
-                {
-                    //if positionOk we dont need to do anything
-                }
-                else
-                {
-                    current_kit.transform.position = p;
-                    return false;
-                }
-                
-            }
-            
-            current_kit.transform.position = p + new Vector3(0,last_level,0);
-            return true;
-           
-        }
-        return false;
             
     }
 

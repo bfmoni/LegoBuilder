@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
-public class MenuController : MonoBehaviour
+public class MenuController : MonoBehaviourPun
 {
     public Canvas mainCanvas;
     //panels
@@ -79,6 +80,10 @@ public class MenuController : MonoBehaviour
 
     void Update()
     {
+        if (!this.photonView.IsMine)
+        {
+            return;
+        }
         
         timer += Time.deltaTime;
         if(nextInputTimer < 5)
@@ -1533,6 +1538,7 @@ public class MenuController : MonoBehaviour
         {
             //TODO join multiplayer group using pinValue
             connected = true;
+            Launcher.JoinRoom(pinValue);
             ExitMenuMode();
         }
 
@@ -1844,6 +1850,7 @@ public class MenuController : MonoBehaviour
         {
             //TODO disconnect
             connected = false;
+            Launcher.LeaveRoom();
             ExitMenuMode();
         }
         else if (connectedBackButton.GetComponent<Image>().color != blackDark)

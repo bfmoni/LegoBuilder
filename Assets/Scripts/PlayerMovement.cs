@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviourPun//, IPunObservable
 {
     public static float speed = 8;
     private Vector3 moveDirection;
@@ -14,7 +15,13 @@ public class PlayerMovement : MonoBehaviour
     public GameObject cameraParent;
 
    
-
+    // void Awake()
+    // {
+    //     if (!this.photonView.IsMine)
+    //     {
+    //         this.gameObject.SetActive(false);
+    //     }
+    // }
     
 
     void Start()
@@ -27,6 +34,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (!this.photonView.IsMine)
+        {
+            return;
+        }
+        
         float y = Camera.main.transform.eulerAngles.y;
         avatar.transform.eulerAngles = new Vector3(avatar.transform.eulerAngles.x, y, avatar.transform.eulerAngles.z);
 
@@ -70,8 +82,31 @@ public class PlayerMovement : MonoBehaviour
                 controller.Move(moveDirection * Time.deltaTime);
             }
         }
-
-
     }
+
+
+    // void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    // {
+    //     // currently there is no strategy to improve on bandwidth, just passing the current distance and speed is enough, 
+    //     // Input could be passed and then used to better control speed value
+    //     //  Data could be wrapped as a vector2 or vector3 to save a couple of bytes
+    //     if (stream.IsWriting)
+    //     {
+    //         stream.SendNext(this.CurrentDistance);
+    //         stream.SendNext(this.CurrentSpeed);
+    //         stream.SendNext(this.m_input);
+    //     }
+    //     else
+    //     {
+    //         if (this.m_firstTake)
+    //         {
+    //             this.m_firstTake = false;
+    //         }
+
+    //         this.CurrentDistance = (float) stream.ReceiveNext();
+    //         this.CurrentSpeed = (float) stream.ReceiveNext();
+    //         this.m_input = (float) stream.ReceiveNext();
+    //     }
+    // }
    
 }

@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class LegoController : MonoBehaviour
+public class LegoController : MonoBehaviourPun
 {
     // inspiration from https://www.youtube.com/watch?v=0jzc_uNdH40&t=647s
     // holds all the lego prefabs 0-5 is 1x 6-10 is 2x prefab 11 is L shape
@@ -49,7 +50,11 @@ public class LegoController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-    
+        if (!this.photonView.IsMine)
+        {
+            return;
+        }
+        
         if(!MenuController.menuMode && !kit_mode)
         {
             if(current_lego == null)

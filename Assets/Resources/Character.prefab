@@ -11432,6 +11432,9 @@ MonoBehaviour:
   kit_placed: 0
   kit_position: 0
   current_kit: {fileID: 0}
+  multiplayer_lego: {fileID: 0}
+  multiplayer_kit: {fileID: 0}
+  timer: 0
   audioSource: {fileID: 6667812239375206083}
   legoSound: {fileID: 8300000, guid: 2c5292ba5cf254919a6b9e2b18e04f49, type: 3}
   placeSound: {fileID: 8300000, guid: d8d04c6f80a1140db85ede568dab1f51, type: 3}

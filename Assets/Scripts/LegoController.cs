@@ -24,7 +24,10 @@ public class LegoController : MonoBehaviourPun
     public static int bottom_level;
     public Kit current_kit;
 
+    public GameObject multiplayer_lego;
+    public GameObject multiplayer_kit;
 
+    public float timer = 0;
 
     //Lego Colors
     UnityEngine.Color lego_purple = new Color32(150, 117, 180, 255);
@@ -52,6 +55,8 @@ public class LegoController : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
+        if(timer < .6)
+            timer += Time.deltaTime;
         if (!this.photonView.IsMine)
         {
             return;
@@ -63,11 +68,20 @@ public class LegoController : MonoBehaviourPun
             {
                 if(Input.GetButtonUp("B") && !MenuController.last_open)
                 {
-                    current_lego = Instantiate(all_legos[MenuController.selectedBlock]);
-                    //current_lego = PhotonNetwork.Instantiate(GetLego(), new Vector3(0,0,0), Quaternion.identity, 0);
-                    //current_lego = PhotonNetwork.Instantiate(all_legos[MenuController.selectedBlock].name, new Vector3(0,0,0), Quaternion.identity, 0);
-                    current_lego.Collider.enabled = false;
-                    PlayerMovement.lego_selected = true;
+                    if(PhotonNetwork.InRoom)
+                    {
+                        multiplayer_lego = PhotonNetwork.Instantiate(all_legos[MenuController.selectedBlock].name, new Vector3(0,0,0), Quaternion.identity, 0);
+                        current_lego = multiplayer_lego.GetComponent<Lego>();
+                        current_lego.Collider.enabled = false;
+                        PlayerMovement.lego_selected = true;
+                    }
+                    else
+                    {
+                        current_lego = Instantiate(all_legos[MenuController.selectedBlock]);
+                        current_lego.Collider.enabled = false;
+                        PlayerMovement.lego_selected = true;
+                    }
+                    
                 }
             }
             else
@@ -79,14 +93,29 @@ public class LegoController : MonoBehaviourPun
                 }
                 if(Input.GetButtonUp("A"))
                 {
-                    GameObject.DestroyImmediate(current_lego.gameObject);
+                    if(PhotonNetwork.InRoom)
+                    {
+                        PhotonNetwork.Destroy(multiplayer_lego);
+                    }
+                    else
+                    {
+                        GameObject.DestroyImmediate(current_lego.gameObject);         
+                    }
                     current_lego = null;
                     PlayerMovement.lego_selected = false;
                     audioSource.PlayOneShot(legoSound);
                 }
                 if(Input.GetButtonUp("X"))
                 {
-                    ColorCycle();
+                    
+                    if(PhotonNetwork.InRoom)
+                    {
+                        photonView.RPC("ChangeLegoColor",RpcTarget.AllBuffered, current_lego.PV.ViewID);
+                    }
+                    else
+                    {
+                        ColorCycle();
+                    }
                     audioSource.PlayOneShot(legoSound);
                 }
                 if(Input.GetButtonUp("Y"))
@@ -109,8 +138,17 @@ public class LegoController : MonoBehaviourPun
             {
                 if(current_kit == null)
                 {
-                    current_kit = Instantiate(kits[kit_selection]);
-
+                    //TODO
+                    
+                    if(PhotonNetwork.InRoom)
+                    {
+                        multiplayer_kit = PhotonNetwork.Instantiate(kits[kit_selection].name, new Vector3(0,0,0), Quaternion.identity, 0);
+                        current_kit = multiplayer_kit.GetComponent<Kit>();
+                    }
+                    else
+                    {
+                        current_kit = Instantiate(kits[kit_selection]);
+                    }
                     for(int i = 0; i < current_kit.kit_legos.Length; i++)
                     {
                         current_kit.kit_legos[i].gameObject.SetActive(true);
@@ -131,7 +169,14 @@ public class LegoController : MonoBehaviourPun
 
                 else if(Input.GetButtonUp("A") && !MenuController.last_open)
                 {
-                    GameObject.DestroyImmediate(current_kit.gameObject);
+                    if(PhotonNetwork.InRoom)
+                    {
+                        PhotonNetwork.Destroy(multiplayer_kit);
+                    }
+                    else
+                    {
+                        GameObject.DestroyImmediate(current_kit.gameObject);
+                    }
                     current_kit = null;
                     kit_mode = false;
                     audioSource.PlayOneShot(legoSound);
@@ -150,8 +195,18 @@ public class LegoController : MonoBehaviourPun
                 //spawn appropriate lego for step
                 if(current_lego == null)
                 {
-                    current_lego = Instantiate(current_kit.kit_legos[kit_step]);
-                    //current_lego = PhotonNetwork.Instantiate(current_kit.kit_legos[kit_step], new Vector3(0,0,0), Quaternion.identity, 0);
+                    //TODO
+                     if(PhotonNetwork.InRoom)
+                    {
+                        multiplayer_lego = PhotonNetwork.Instantiate(current_kit.kit_legos[kit_step].name, new Vector3(0,0,0), Quaternion.identity, 0);
+                        current_lego = multiplayer_lego.GetComponent<Lego>();
+                        current_lego.Collider.enabled = false;
+                        PlayerMovement.lego_selected = true;
+                    }
+                    else
+                    {
+                        current_lego = Instantiate(current_kit.kit_legos[kit_step]);
+                    }
                     current_lego.Collider.enabled = false;
                     PlayerMovement.lego_selected = true;
                     int numChildren = current_lego.transform.childCount;
@@ -168,9 +223,18 @@ public class LegoController : MonoBehaviourPun
                     {
                         if(current_lego.transform.position == current_kit.kit_legos[kit_step].transform.position)
                         {
-                            //TODO instantiate photonNetwork lego of the right color in the right position
-                            //current_lego = PhotonNetwork.Instantiate(all_legos[MenuController.selectedBlock].name, new Vector3(0,0,0), Quaternion.identity, 0);
-                            current_kit.kit_legos[kit_step].gameObject.SetActive(false);
+                            
+                            if(PhotonNetwork.InRoom)
+                            {
+                                Vector3 pos = current_lego.transform.position;
+                                photonView.RPC("SyncLego",RpcTarget.AllBuffered, current_lego.PV.ViewID, pos.x,pos.y,pos.z,current_lego.transform.eulerAngles.y);
+                                photonView.RPC("DisableLego",RpcTarget.AllBuffered, current_kit.kit_legos[kit_step].gameObject.GetComponent<Lego>().PV.ViewID );
+                            }
+                            else
+                            {
+                                current_kit.kit_legos[kit_step].gameObject.SetActive(false);
+                            }
+                            
                             PlayerMovement.placed_legos.Push(current_lego);
                             current_lego.Collider.enabled = true;
                             current_lego = null;
@@ -191,7 +255,14 @@ public class LegoController : MonoBehaviourPun
                             else
                             {
                                 audioSource.PlayOneShot(finishSound);
-                                GameObject.DestroyImmediate(current_kit.gameObject);
+                                if(PhotonNetwork.InRoom)
+                                {
+                                    PhotonNetwork.Destroy(multiplayer_kit);
+                                }
+                                else
+                                {
+                                    GameObject.DestroyImmediate(current_kit.gameObject);
+                                }
                                 current_kit = null;
                                 kit_step = -1;
                                 kit_mode = false;
@@ -203,8 +274,16 @@ public class LegoController : MonoBehaviourPun
 
                     if(Input.GetButtonUp("A"))
                     {
-                        GameObject.DestroyImmediate(current_lego.gameObject);
-                        GameObject.DestroyImmediate(current_kit.gameObject);
+                        if(PhotonNetwork.InRoom)
+                        {
+                            PhotonNetwork.Destroy(multiplayer_kit);
+                            PhotonNetwork.Destroy(multiplayer_lego);
+                        }
+                        else
+                        {
+                             GameObject.DestroyImmediate(current_lego.gameObject);
+                            GameObject.DestroyImmediate(current_kit.gameObject);
+                        }
                         PlayerMovement.lego_selected = false;
                         kit_placed = false;
                         kit_mode = false;
@@ -214,7 +293,14 @@ public class LegoController : MonoBehaviourPun
                     }
                     if(Input.GetButtonUp("X"))
                     {
-                        ColorCycle();
+                        if(PhotonNetwork.InRoom)
+                        {
+                            photonView.RPC("ChangeLegoColor",RpcTarget.AllBuffered, current_lego.PV.ViewID);
+                        }
+                        else
+                        {
+                            ColorCycle();
+                        }
                         audioSource.PlayOneShot(legoSound);
                     }
                     if(Input.GetButtonUp("Y"))
@@ -234,8 +320,11 @@ public class LegoController : MonoBehaviourPun
     {
         if(current_lego != null && PositionOk)
         {
-            //TODO instantiate photonNetwork lego of the right color in the right position
-            //current_lego = PhotonNetwork.Instantiate(all_legos[MenuController.selectedBlock].name, new Vector3(0,0,0), Quaternion.identity, 0);
+            if(PhotonNetwork.InRoom)
+            {
+                Vector3 pos = current_lego.transform.position;
+                photonView.RPC("SyncLego",RpcTarget.AllBuffered, current_lego.PV.ViewID, pos.x,pos.y,pos.z,current_lego.transform.eulerAngles.y);
+            }
             PlayerMovement.placed_legos.Push(current_lego);
             current_lego.Collider.enabled = true;
             current_lego = null;
@@ -270,8 +359,6 @@ public class LegoController : MonoBehaviourPun
             for (int i = 0; i < 10; i++)
             {
                 var collider = Physics.OverlapBox(placePosition + current_lego.transform.rotation * current_lego.Collider.center, current_lego.Collider.size / 2, current_lego.transform.rotation, GridController.LegoLayer);
-                //Why does this version not work?
-                //var collider = Physics.OverlapBox(placePosition + current_lego.Collider.center, current_lego.Collider.size / 2, current_lego.transform.rotation, GridController.LegoLayer);
                 PositionOk = collider.Length == 0;
                 if (PositionOk)
                 {
@@ -287,6 +374,14 @@ public class LegoController : MonoBehaviourPun
             }
             else
                 current_lego.transform.position = p;
+            Vector3 pos = current_lego.transform.position;
+            float ros = current_lego.transform.eulerAngles.y;
+            if(timer > .2)
+            {
+                timer = 0;
+                photonView.RPC("SyncLego",RpcTarget.AllBuffered, current_lego.PV.ViewID, pos.x,pos.y,pos.z,ros);
+            }
+            
             
         
         }
@@ -315,6 +410,9 @@ public class LegoController : MonoBehaviourPun
                 }
             }
             kit_placed = true;
+            Vector3 pos = current_kit.transform.position;
+            float ros = current_kit.transform.eulerAngles.y;
+            photonView.RPC("SyncKit",RpcTarget.AllBuffered, current_kit.PV.ViewID, pos.x,pos.y,pos.z,ros);
 
         }
     }
@@ -363,10 +461,64 @@ public class LegoController : MonoBehaviourPun
                     break;
                 }
             }
+            Vector3 pos = current_kit.transform.position;
+            float ros = current_kit.transform.eulerAngles.y;
+            if(PhotonNetwork.InRoom)
+            {
+                timer = 0;
+                photonView.RPC("SyncKit",RpcTarget.AllBuffered, current_kit.PV.ViewID, pos.x,pos.y,pos.z,ros);
+            }
 
         }
 
             
     }
+
+
+    [PunRPC]
+    public void ChangeLegoColor(int id)
+    {
+        int numChildren = PhotonView.Find(id).gameObject.transform.childCount;
+        for(int i=0; i<numChildren; i++)
+        {
+            GameObject child = PhotonView.Find(id).gameObject.transform.GetChild(i).gameObject;
+            if(child.GetComponent<Renderer>().material.color == lego_purple) {child.GetComponent<Renderer>().material.color = lego_blue;}
+            else if(child.GetComponent<Renderer>().material.color == lego_blue) {child.GetComponent<Renderer>().material.color = lego_green;}
+            else if(child.GetComponent<Renderer>().material.color == lego_green) {child.GetComponent<Renderer>().material.color = lego_yellow;}
+            else if(child.GetComponent<Renderer>().material.color == lego_yellow) {child.GetComponent<Renderer>().material.color = lego_red;}
+            else if(child.GetComponent<Renderer>().material.color == lego_red) {child.GetComponent<Renderer>().material.color = lego_brown;}
+            else if(child.GetComponent<Renderer>().material.color == lego_brown) {child.GetComponent<Renderer>().material.color = lego_black;}
+            else if(child.GetComponent<Renderer>().material.color == lego_black) {child.GetComponent<Renderer>().material.color = lego_white;}
+            else if(child.GetComponent<Renderer>().material.color == lego_white) {child.GetComponent<Renderer>().material.color = lego_purple;}
+        }
+    }
+    
+    [PunRPC]
+    public void SyncLego(int id, float x, float y, float z, float ry)
+    {
+        GameObject lego = PhotonView.Find(id).gameObject;
+        lego.transform.position = new Vector3(x,y,z);
+        lego.transform.eulerAngles = new Vector3(0,ry,0);
+        
+    }
+
+    [PunRPC]
+    public void DisableLego(int id)
+    {
+        GameObject disable_kit_piece = PhotonView.Find(id).gameObject;
+        disable_kit_piece.SetActive(false);
+        
+        
+    }
+
+    [PunRPC]
+    public void SyncKit(int id, float x, float y, float z, float ry)
+    {
+        GameObject Kit_Multi = PhotonView.Find(id).gameObject;
+        Kit_Multi.transform.position = new Vector3(x,y,z);
+        Kit_Multi.transform.eulerAngles = new Vector3(0,ry,0);
+        
+    }
+    
 
 }

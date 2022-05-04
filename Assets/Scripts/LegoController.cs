@@ -109,10 +109,8 @@ public class LegoController : MonoBehaviourPun
             {
                 if(current_kit == null)
                 {
-                    //TODO
                     current_kit = Instantiate(kits[kit_selection]);
-                    
-                    //current_kit = PhotonNetwork.Instantiate(kits[kit_selection], new Vector3(0,0,0), Quaternion.identity, 0);
+
                     for(int i = 0; i < current_kit.kit_legos.Length; i++)
                     {
                         current_kit.kit_legos[i].gameObject.SetActive(true);
@@ -152,7 +150,6 @@ public class LegoController : MonoBehaviourPun
                 //spawn appropriate lego for step
                 if(current_lego == null)
                 {
-                    //TODO
                     current_lego = Instantiate(current_kit.kit_legos[kit_step]);
                     //current_lego = PhotonNetwork.Instantiate(current_kit.kit_legos[kit_step], new Vector3(0,0,0), Quaternion.identity, 0);
                     current_lego.Collider.enabled = false;
@@ -171,6 +168,8 @@ public class LegoController : MonoBehaviourPun
                     {
                         if(current_lego.transform.position == current_kit.kit_legos[kit_step].transform.position)
                         {
+                            //TODO instantiate photonNetwork lego of the right color in the right position
+                            //current_lego = PhotonNetwork.Instantiate(all_legos[MenuController.selectedBlock].name, new Vector3(0,0,0), Quaternion.identity, 0);
                             current_kit.kit_legos[kit_step].gameObject.SetActive(false);
                             PlayerMovement.placed_legos.Push(current_lego);
                             current_lego.Collider.enabled = true;
@@ -235,6 +234,8 @@ public class LegoController : MonoBehaviourPun
     {
         if(current_lego != null && PositionOk)
         {
+            //TODO instantiate photonNetwork lego of the right color in the right position
+            //current_lego = PhotonNetwork.Instantiate(all_legos[MenuController.selectedBlock].name, new Vector3(0,0,0), Quaternion.identity, 0);
             PlayerMovement.placed_legos.Push(current_lego);
             current_lego.Collider.enabled = true;
             current_lego = null;

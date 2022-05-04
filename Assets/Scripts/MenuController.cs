@@ -29,7 +29,6 @@ public class MenuController : MonoBehaviourPun
     public Button connectedBackButton, disconnectButton;
     public Text pinText, connectedPinText;
     public String pinValue;
-    public bool connected;
 
     //avatar pieces
     public GameObject a_hat,a_face,a_back,a_hand,a_chest,a_leg,a_skin;
@@ -38,11 +37,11 @@ public class MenuController : MonoBehaviourPun
     public int [] avatar_piece_array = new int [4];
     public int [] temp_color_array = new int [6];
     public int [] temp_piece_array = new int [4];
-    public  Material[] face_array;
+    public Material[] face_array;
     public Material[] avatar_colors;
-    public  GameObject[] item_array;
-    public  GameObject[] back_array;
-    public  GameObject[] hat_array;
+    public GameObject[] item_array;
+    public GameObject[] back_array;
+    public GameObject[] hat_array;
     
     //button colors
     UnityEngine.Color blackDark = new Color32(54, 54, 54, 255);
@@ -60,6 +59,9 @@ public class MenuController : MonoBehaviourPun
     public AudioSource audioSource;
     public AudioClip scrollSound, selectMenuSound, multiConnectSound, multiJoinSound, exitSound, selectUISound;
 
+    public static MenuController PI;
+
+
     void Start()
     {
         timer = 0;
@@ -72,10 +74,19 @@ public class MenuController : MonoBehaviourPun
         HideKitMenu();
         HideMultiMenu();
         HideConnectedMenu();
+        scale = 0;
+
+        if (!this.photonView.IsMine)
+        {
+            UIpanel.SetActive(false);
+            return;
+        }
+
         LoadAvatar();
         //ResetData();
         audioSource.PlayOneShot(multiConnectSound);
-        connected = false;
+
+        SaveAvatar();
     }
 
 
@@ -84,11 +95,6 @@ public class MenuController : MonoBehaviourPun
         if(PhotonNetwork.CurrentRoom != null)
         {
             pinValue = PhotonNetwork.CurrentRoom.Name;
-            connected = true;
-        }
-        else
-        {
-            connected = false;
         }
         
         if (!this.photonView.IsMine)
@@ -758,7 +764,7 @@ public class MenuController : MonoBehaviourPun
         else if(multiplayer.GetComponent<Image>().color != blackDark)
         {
             multiplayer.GetComponent<Image>().color = blackDark;
-            if(connected)
+            if(PhotonNetwork.InRoom)
             {
                 ShowConnectedMenu();
             }
@@ -1104,8 +1110,16 @@ public class MenuController : MonoBehaviourPun
         {
             Array.Copy(temp_color_array, avatar_color_array, avatar_color_array.Length);
             Array.Copy(temp_piece_array, avatar_piece_array, avatar_piece_array.Length);
-            SwapAvatarModel();
             SaveAvatar();
+            if(PhotonNetwork.InRoom & this.photonView.IsMine)
+            {
+                //this.photonView.RPC("SwapAvatarModelMultiplayer", RpcTarget.AllBuffered);
+                //SwapAvatarModelMultiplayer();
+            }
+            else
+            {
+                SwapAvatarModel();
+            }
             ExitMenuMode();
         }
         else if(avatarBackButton.GetComponent<Image>().color != blackDark)
@@ -1184,7 +1198,7 @@ public class MenuController : MonoBehaviourPun
                 }
                 if(temp_piece_array[0] < 3)
                 {
-                    GameObject tempHat = Instantiate (hat_array[temp_piece_array[0]]) as GameObject;
+                    GameObject tempHat = Instantiate(hat_array[temp_piece_array[0]]) as GameObject;
                     tempHat.transform.SetParent(hat.transform, false);
                     tempHat.GetComponent<Renderer>().material = avatar_colors[temp_color_array[0]];
                 }
@@ -1231,23 +1245,20 @@ public class MenuController : MonoBehaviourPun
     }
     public void SwapAvatarModel()
     {
-        
         if(a_hat.transform.childCount > 0)
         {
             DestroyImmediate(a_hat.transform.GetChild(0).gameObject);
         }
         if(avatar_piece_array[0] < 3)
         {
-            GameObject tempHat = Instantiate (hat_array[avatar_piece_array[0]]) as GameObject;
+            GameObject tempHat = Instantiate(hat_array[avatar_piece_array[0]]) as GameObject;
             tempHat.transform.SetParent(a_hat.transform, false);
             tempHat.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[0]];
         }
         
-    
         a_face.GetComponent<Renderer>().material = face_array[avatar_piece_array[1]];
         a_skin.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[1]];
         
-    
         if(a_back.transform.childCount > 0)
         {
             DestroyImmediate(a_back.transform.GetChild(0).gameObject);
@@ -1276,9 +1287,59 @@ public class MenuController : MonoBehaviourPun
         
         a_chest.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[4]];
         
-    
         a_leg.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[5]];
-                
+
+    }
+
+    [PunRPC]
+    public void SwapAvatarModelMultiplayer()
+    {
+        
+        if(a_hat.transform.childCount > 0)
+        {
+            Destroy(a_hat.transform.GetChild(0).gameObject);
+        }
+        if(avatar_piece_array[0] < 3)
+        {
+            //GameObject tempHat = Instantiate(hat_array[PlayerInfo.PI.avatar_piece_array[0]].name, new Vector3(0,0,0), Quaternion.identity) as GameObject;
+            GameObject tempHat = Instantiate(hat_array[avatar_piece_array[0]]) as GameObject;
+            tempHat.transform.SetParent(a_hat.transform, false);
+            tempHat.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[0]];
+        }
+        
+        a_face.GetComponent<Renderer>().material = face_array[avatar_piece_array[1]];
+        a_skin.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[1]];
+        
+        if(a_back.transform.childCount > 0)
+        {
+            Destroy(a_back.transform.GetChild(0).gameObject);
+        }
+
+        if(avatar_piece_array[2] < 3)
+        {
+            GameObject tempBack = Instantiate(back_array[avatar_piece_array[2]]) as GameObject;
+            tempBack.transform.SetParent(a_back.transform, false);
+            if(avatar_piece_array[2] == 1)
+                tempBack.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[2]];
+            else
+                tempBack.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[2]];
+        }
+        
+        if(a_hand.transform.childCount > 0)
+        {
+            Destroy(a_hand.transform.GetChild(0).gameObject);
+        }
+        if(avatar_piece_array[3] < 3)
+        {
+            GameObject tempHand = Instantiate(item_array[avatar_piece_array[3]]) as GameObject;
+            tempHand.transform.SetParent(a_hand.transform, false);
+            tempHand.transform.GetChild(0).gameObject.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[3]];
+        }
+        
+        a_chest.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[4]];
+        
+        a_leg.GetComponent<Renderer>().material = avatar_colors[avatar_color_array[5]];
+
     }
 
     public void ShowKitMenu()
@@ -1548,7 +1609,6 @@ public class MenuController : MonoBehaviourPun
         else if(joinButton.GetComponent<Image>().color != purple2)
         {
             //TODO join multiplayer group using pinValue
-            connected = true;
             PhotonRoom.JoinRoom(pinValue);
             ExitMenuMode();
         }
@@ -1824,6 +1884,13 @@ public class MenuController : MonoBehaviourPun
             PlayerPrefs.SetInt("piece" + i, avatar_piece_array[i]);
         }
         PlayerPrefs.Save();
+
+        if(PlayerInfo.PI != null)
+        {
+            Array.Copy(avatar_color_array, PlayerInfo.PI.avatar_color_array, avatar_color_array.Length);
+            Array.Copy(avatar_piece_array, PlayerInfo.PI.avatar_piece_array, avatar_piece_array.Length);
+            //PlayerInfo.PI.UpdateAvatar();
+        }
     }
 
     public void HideConnectedMenu()
@@ -1859,8 +1926,7 @@ public class MenuController : MonoBehaviourPun
     {
         if(disconnectButton.GetComponent<Image>().color != purple2)
         {
-            //TODO disconnect
-            connected = false;
+            //TODO fix this
             PhotonRoom.LeaveRoom();
             ExitMenuMode();
         }
@@ -1885,7 +1951,18 @@ public class MenuController : MonoBehaviourPun
                 avatar_piece_array[i] = PlayerPrefs.GetInt("piece" + i);
             }
         }
-        SwapAvatarModel();
+        
+        if(PhotonNetwork.InRoom & this.photonView.IsMine)
+        {
+            //this.photonView.RPC("SwapAvatarModelMultiplayer", RpcTarget.AllBuffered);
+            //SwapAvatarModelMultiplayer();
+        }
+        else
+        {
+            SwapAvatarModel();
+        }
+
+        
     }
 
     void ResetData()

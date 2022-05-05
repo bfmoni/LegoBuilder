@@ -72,16 +72,14 @@ public class LegoController : MonoBehaviourPun
                     {
                         multiplayer_lego = PhotonNetwork.Instantiate(all_legos[MenuController.selectedBlock].name, new Vector3(0,0,0), Quaternion.identity, 0);
                         current_lego = multiplayer_lego.GetComponent<Lego>();
-                        current_lego.Collider.enabled = false;
-                        PlayerMovement.lego_selected = true;
                     }
                     else
                     {
                         current_lego = Instantiate(all_legos[MenuController.selectedBlock]);
-                        current_lego.Collider.enabled = false;
-                        PlayerMovement.lego_selected = true;
                     }
-                    
+                    current_lego.Collider.enabled = false;
+                    PlayerMovement.lego_selected = true;
+                    current_lego.gameObject.transform.GetChild(0).GetComponent<Renderer>().enabled = true;
                 }
             }
             else
@@ -148,6 +146,7 @@ public class LegoController : MonoBehaviourPun
                     else
                     {
                         current_kit = Instantiate(kits[kit_selection]);
+                        
                     }
                     for(int i = 0; i < current_kit.kit_legos.Length; i++)
                     {
@@ -200,13 +199,12 @@ public class LegoController : MonoBehaviourPun
                     {
                         multiplayer_lego = PhotonNetwork.Instantiate(current_kit.kit_legos[kit_step].name, new Vector3(0,0,0), Quaternion.identity, 0);
                         current_lego = multiplayer_lego.GetComponent<Lego>();
-                        current_lego.Collider.enabled = false;
-                        PlayerMovement.lego_selected = true;
                     }
                     else
                     {
                         current_lego = Instantiate(current_kit.kit_legos[kit_step]);
                     }
+                    current_lego.gameObject.transform.GetChild(0).GetComponent<Renderer>().enabled = true;
                     current_lego.Collider.enabled = false;
                     PlayerMovement.lego_selected = true;
                     int numChildren = current_lego.transform.childCount;
@@ -234,7 +232,7 @@ public class LegoController : MonoBehaviourPun
                             {
                                 current_kit.kit_legos[kit_step].gameObject.SetActive(false);
                             }
-                            
+                            current_lego.gameObject.transform.GetChild(0).GetComponent<Renderer>().enabled = false;
                             PlayerMovement.placed_legos.Push(current_lego);
                             current_lego.Collider.enabled = true;
                             current_lego = null;
@@ -326,6 +324,7 @@ public class LegoController : MonoBehaviourPun
                 photonView.RPC("SyncLego",RpcTarget.AllBuffered, current_lego.PV.ViewID, pos.x,pos.y,pos.z,current_lego.transform.eulerAngles.y);
             }
             PlayerMovement.placed_legos.Push(current_lego);
+            current_lego.gameObject.transform.GetChild(0).GetComponent<Renderer>().enabled = false;
             current_lego.Collider.enabled = true;
             current_lego = null;
             PlayerMovement.lego_selected = false;
@@ -335,7 +334,7 @@ public class LegoController : MonoBehaviourPun
     public void ColorCycle()
     {
         int numChildren = current_lego.transform.childCount;
-        for(int i=0; i<numChildren; i++)
+        for(int i=1; i<numChildren; i++)
         {
             GameObject child = current_lego.transform.GetChild(i).gameObject;
             if(child.GetComponent<Renderer>().material.color == lego_purple) {child.GetComponent<Renderer>().material.color = lego_blue;}
@@ -479,7 +478,7 @@ public class LegoController : MonoBehaviourPun
     public void ChangeLegoColor(int id)
     {
         int numChildren = PhotonView.Find(id).gameObject.transform.childCount;
-        for(int i=0; i<numChildren; i++)
+        for(int i=1; i<numChildren; i++)
         {
             GameObject child = PhotonView.Find(id).gameObject.transform.GetChild(i).gameObject;
             if(child.GetComponent<Renderer>().material.color == lego_purple) {child.GetComponent<Renderer>().material.color = lego_blue;}

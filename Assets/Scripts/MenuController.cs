@@ -75,7 +75,11 @@ public class MenuController : MonoBehaviourPun
         HideMultiMenu();
         HideConnectedMenu();
         scale = 0;
-
+        menuButton.GetComponent<Image>().color = blackDark;
+        legoButton.GetComponent<Image>().color = blackDark;
+        undoButton.GetComponent<Image>().color = blackDark;
+        zoomInButton.GetComponent<Image>().color = blackDark;
+        zoomOutButton.GetComponent<Image>().color = blackDark;
         if (!this.photonView.IsMine)
         {
             UIpanel.SetActive(false);
@@ -571,7 +575,7 @@ public class MenuController : MonoBehaviourPun
         else if(undoButton.GetComponent<Image>().color != blackDark)
         {
             
-            if(PlayerMovement.placed_legos.Count != 0)
+            if(PlayerMovement.placed_legos.Count != 0 && !PhotonNetwork.InRoom)
             {
                 
                 GameObject.DestroyImmediate(PlayerMovement.placed_legos.Pop().gameObject);

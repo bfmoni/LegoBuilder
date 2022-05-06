@@ -1401,7 +1401,7 @@ public class MenuController : MonoBehaviourPun
         else if(pyramidButton.GetComponent<Image>().color != blackDark)
         {
             LegoController.kit_selection = 1;
-            LegoController.bottom_level = 3;
+            LegoController.bottom_level = 2;
             pyramidButton.GetComponent<Image>().color = blackDark;
             kitPanel.SetActive(false);
             ExitMenuMode();

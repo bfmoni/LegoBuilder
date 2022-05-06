@@ -12,4 +12,10 @@ https://www.figma.com/community/file/959734122681681526
 sound effects:
 https://assetstore.unity.com/packages/audio/sound-fx/free-casual-game-sfx-pack-54116
 
+outline (same as assignments):
+https://assetstore.unity.com/packages/tools/particles-effects/quick-outline-115488#description
+
+multiplayer (photon2):
+https://assetstore.unity.com/packages/tools/network/pun-2-free-119922#description
+
 lego 3D assets and all other 2D sprites made by us

@@ -1,0 +1,48 @@
+####################
+# USABILITY ISSUES #
+####################
+
+Not clear which block is active/selected:
+
+We added the outline script that shows an outline
+only on the currently active lego indicating that
+it can be manipulated (rotate/color cycle/move).
+Once the block is placed and can no longer be
+changed, the outline disappears.
+---------------------------------------------------
+Various issues with zoom/view
+
+Due to the various feedbacks regarding zoom, we
+reworked how it works entirely from the preliminary
+prototype. Now, it is modeled after systems like
+Skyrim where you load into the game in 1st person
+mode. Zooming out one level takes you to a close
+3rd person view, and zooming out one further level
+takes you to a far 3rd person view. This way you can
+choose between feeling like you are building (in 1st
+person view), or exploring the world you built (3rd
+person view).
+---------------------------------------------------
+Various issues with remembering button mappings
+
+We added a graphic in the bottom left hand corner
+that indicates the current functions of the
+respective joystick buttons. Due to room constraints
+it is not very descriptive, but serves enough of a
+hint as to what the buttons do that people can use
+it to navigate to the more detailed help menu if
+necessary.
+---------------------------------------------------
+Reticle pointer is confusing.
+
+Since we navigate the UI solely through the buttons,
+some commented it was weird having the reticle
+pointer, and they were confused by its existence.
+Because we had no use for it we removed it.
+---------------------------------------------------
+Main UI icons too small/high.
+
+We made the UI icons larger, increased their alpha
+values (to make them less see-through to increase
+visibility), and lowered their position on the
+screen.

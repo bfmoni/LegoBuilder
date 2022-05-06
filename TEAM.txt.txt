@@ -1,0 +1,29 @@
+Team 10
+We R Lego
+
+Veenu Bishnoi
+- menu functionality
+- Lego manipulation
+- multiplayer
+
+Pragathi Ilango
+- Lego placement
+- menu functionality
+- sounds
+
+Ben Monical
+- Lego prefabs
+- Lego placement/manipulation
+- kit placement/manipulation
+- multiplayer: lego/kit placement/manipulation,
+               connecting to Photon
+- Avatar customization
+- Lego outline
+
+Julie Whitmore
+- 2D assets
+- UI and menu visuals/functionality
+- avatar assets/customization
+- multiplayer: avatar loading/customization,
+               connection menu
+- kit steps

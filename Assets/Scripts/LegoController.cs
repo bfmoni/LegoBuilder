@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public class LegoController : MonoBehaviourPun
 {
@@ -46,6 +47,9 @@ public class LegoController : MonoBehaviourPun
     public AudioClip legoSound, placeSound, finishSound;
 
 
+    //button mappings
+    public Button b_button, x_button, y_button;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -80,6 +84,10 @@ public class LegoController : MonoBehaviourPun
                     current_lego.Collider.enabled = false;
                     PlayerMovement.lego_selected = true;
                     current_lego.gameObject.transform.GetChild(0).GetComponent<Renderer>().enabled = true;
+
+                    b_button.GetComponentInChildren<Text>().text = "PLACE";
+                    x_button.GetComponentInChildren<Text>().text = "COLOR";
+                    y_button.GetComponentInChildren<Text>().text = "ROTATE";
                 }
             }
             else
@@ -101,6 +109,9 @@ public class LegoController : MonoBehaviourPun
                     }
                     current_lego = null;
                     PlayerMovement.lego_selected = false;
+                    b_button.GetComponentInChildren<Text>().text = "LEGO";
+                    x_button.GetComponentInChildren<Text>().text = "-";
+                    y_button.GetComponentInChildren<Text>().text = "UI";
                     audioSource.PlayOneShot(legoSound);
                 }
                 if(Input.GetButtonUp("X"))
@@ -136,8 +147,6 @@ public class LegoController : MonoBehaviourPun
             {
                 if(current_kit == null)
                 {
-                    //TODO
-                    
                     if(PhotonNetwork.InRoom)
                     {
                         multiplayer_kit = PhotonNetwork.Instantiate(kits[kit_selection].name, new Vector3(0,0,0), Quaternion.identity, 0);
@@ -153,7 +162,9 @@ public class LegoController : MonoBehaviourPun
                         current_kit.kit_legos[i].gameObject.SetActive(true);
                         current_kit.kit_legos[i].Collider.enabled = false;
                     }
-                    
+                    b_button.GetComponentInChildren<Text>().text = "PLACE";
+                    x_button.GetComponentInChildren<Text>().text = "COLOR";
+                    y_button.GetComponentInChildren<Text>().text = "ROTATE";
                 }
                 if(current_kit != null)
                 {
@@ -178,6 +189,9 @@ public class LegoController : MonoBehaviourPun
                     }
                     current_kit = null;
                     kit_mode = false;
+                    b_button.GetComponentInChildren<Text>().text = "LEGO";
+                    x_button.GetComponentInChildren<Text>().text = "-";
+                    y_button.GetComponentInChildren<Text>().text = "UI";
                     audioSource.PlayOneShot(legoSound);
                 }
 
@@ -261,6 +275,9 @@ public class LegoController : MonoBehaviourPun
                                 {
                                     GameObject.DestroyImmediate(current_kit.gameObject);
                                 }
+                                b_button.GetComponentInChildren<Text>().text = "LEGO";
+                                x_button.GetComponentInChildren<Text>().text = "-";
+                                y_button.GetComponentInChildren<Text>().text = "UI";
                                 current_kit = null;
                                 kit_step = -1;
                                 kit_mode = false;
@@ -287,6 +304,9 @@ public class LegoController : MonoBehaviourPun
                         kit_mode = false;
                         current_kit = null;
                         current_lego = null;
+                        b_button.GetComponentInChildren<Text>().text = "LEGO";
+                        x_button.GetComponentInChildren<Text>().text = "-";
+                        y_button.GetComponentInChildren<Text>().text = "UI";
                         audioSource.PlayOneShot(legoSound);
                     }
                     if(Input.GetButtonUp("X"))
@@ -328,6 +348,9 @@ public class LegoController : MonoBehaviourPun
             current_lego.Collider.enabled = true;
             current_lego = null;
             PlayerMovement.lego_selected = false;
+            b_button.GetComponentInChildren<Text>().text = "LEGO";
+            x_button.GetComponentInChildren<Text>().text = "-";
+            y_button.GetComponentInChildren<Text>().text = "UI";
         }
     }
 
@@ -412,7 +435,6 @@ public class LegoController : MonoBehaviourPun
             Vector3 pos = current_kit.transform.position;
             float ros = current_kit.transform.eulerAngles.y;
             photonView.RPC("SyncKit",RpcTarget.AllBuffered, current_kit.PV.ViewID, pos.x,pos.y,pos.z,ros);
-
         }
     }
 

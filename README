@@ -1,6 +1,7 @@
 FINAL PROTOTYPE VIDEO:
-[TODO]
+https://youtu.be/Qcmv08MVP3Y
 
+OVERVIEW:
 On startup, the OpenPage scene will display which
 just acts like a loading screen. The main bulk of
 the project is in the LegoScene. After the loading
@@ -12,7 +13,56 @@ avatar can be customized.
 LegoSceneMulti is the scene that is loaded when 
 connected to multiplayer. It does not differ from 
 the regular lego scene.
+
+SANDBOX MODE (auto start in this mode):
+The top buttons of the UI allow the following features:
+- Lego menu where different bricks can be selected.
+- Undo button to remove placed legos in last in first 
+  out order.
+- Zoom in to change from 3rd person to 1st person
+  (auto start in 1st person)
+- Zoom out to change from 1st person to 3rd person
+- Menu button to bring up the main menu and change
+  modes.
+
+KIT MODE:
+- Accessed via the main menu.
+- Select a kit to spawn and place it in a valid location
+  in the world.
+- Kits can be rotated like legos.
+- Once a kit is placed, go through the steps as indicated
+  by the white lego.
+- Kit mode may be cancelled at any time.
+
+AVATAR CUSTOMIZATION:
+- Accessed via the main menu.
+- Hat options: witch hat, helmet, crown, none
+- Back options: butterfly wings, turtle shell, jetpack,
+  none
+- Held item options: flowers, sword, spear
+- 8 color options for all accessories above as well
+  as skin, body, and legs
+- Avatar display can be rotated in the menu to see all
+  angles.
+- Avatar settings persist after closing and reopening 
+  app as well as loading in to multiplayer.
+- Note: if avatar settings are changed in multiplayer, 
+  they will not reflect in the scene until that session 
+  is left. This is to prevent confusion of the players 
+  as to who is who.
+
+MULTIPLAYER:
+- Accessed via the main menu.
+- Select a room name that is a 1-4 digit number.
+- If that rooms exists, join it. If it doesn't, create it.
+- Avatar settings load in with you.
+- Your active legos interact with other's active legos
+  (yours is highlighted to prevent confusion).
+- Note: undo button is disabled for multiplayer to prevent 
+  other players from making your legos invalid.
 ----------------------------------------------------
+INTERACTION
+
 The controls are based off of the provided VR3D
 gamepad and are as follows:
 
@@ -31,6 +81,20 @@ B: place lego
 X: color cycle lego
 Y: rotate lego
 
+Inside Menus:
+A: close menu
+B: select
+X: 
+Y: 
+joystick: navigate menu items
+
+Avatar Customization Menu:
+A: close menu
+B: cycle options
+X: cycle colors
+Y: rotate avatar
+joystick: navigate menu items
+
 note: when using Unity editor the corresponding
 button mappings (controller -> computer) are
 
@@ -40,3 +104,6 @@ A -> J
 B -> K
 X -> I
 Y -> L
+
+Button mappings for the current setting (lego active/inactive)
+are displayed in the bottom right hand corner.

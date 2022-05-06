@@ -315,7 +315,7 @@ public class MenuController : MonoBehaviourPun
                 }
             }
 
-            else if(temp1 != 0 & timer > 0.3 & connectedPanel.activeInHierarchy)
+            else if(temp2 != 0 & timer > 0.3 & connectedPanel.activeInHierarchy)
             {
                 timer = 0;
                 audioSource.PlayOneShot(scrollSound);
